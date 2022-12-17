@@ -47,14 +47,13 @@ public class DrivetrainTest extends OpMode
     }
 
     /*
-     * eqwCode to run REPEATEDLY after the driver hits PLAY but before they hit STOP
+     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     @Override
     public void loop() {
         double y = -gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x * 1.1;
         double rx = gamepad1.right_stick_x;
-        float spin_power = 0.30f; // The spin power
 
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
         double frontLeftPower = (y + x + rx) / denominator;
