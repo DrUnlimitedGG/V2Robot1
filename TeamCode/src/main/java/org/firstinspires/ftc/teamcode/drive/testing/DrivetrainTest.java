@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.teleop;
+package org.firstinspires.ftc.teamcode.drive.testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.acmerobotics.dashboard.config.Config;
 
 @Config
-@TeleOp(name="MecanumDrive", group="TeleOp")
-public class MecanumDrive extends OpMode
+@TeleOp(name="DrivetrainTest", group="Testing")
+public class DrivetrainTest extends OpMode
 {
     // Drivetrain motors
     private DcMotorEx LF = null;
@@ -68,7 +68,7 @@ public class MecanumDrive extends OpMode
         LB.setPower(backLeftPower * powerOffset);
         RF.setPower(frontRightPower * powerOffset);
         RB.setPower(backRightPower * powerOffset);
-
+// hi
         telemetry.update();
     }
 
