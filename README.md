@@ -1,17 +1,5 @@
-# Road Runner Quickstart
+# Shark! Robotics
 
-An example FTC project using [Road Runner](https://github.com/acmerobotics/road-runner). **Note:** Road Runner is in alpha and many of its APIs are incubating.
+Code repository for 21235 Shark! Robotics
 
-## Installation
-
-For more detailed instructions on getting Road Runner setup in your own project, see the [Road Runner README](https://github.com/acmerobotics/road-runner#core).
-
-1. Download or clone this repo with `git clone https://github.com/acmerobotics/road-runner-quickstart`.
-
-1. Open the project in Android Studio and build `TeamCode` like any other `ftc_app` project.
-
-1. If you have trouble with multidex, enable proguard by changing `useProguard` to `true` in `build.common.gradle`.
-
-## Documentation
-
-Check out the new [online quickstart documentation](https://acme-robotics.gitbook.io/road-runner/quickstart/introduction).
+[![Website](https://img1.wsimg.com/isteam/ip/d1a98ab9-71c1-4302-b99e-ecb34d173f84/Shark!%20Website%20Logo%20(4).png/:/rs=w:1499,h:400,cg:true,m/cr=w:1499,h:400/qt=q:95)](https://sharkrobotics.godaddysites.com/)
