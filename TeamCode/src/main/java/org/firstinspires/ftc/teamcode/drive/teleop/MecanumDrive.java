@@ -10,7 +10,6 @@ import com.acmerobotics.dashboard.config.Config;
 public class MecanumDrive extends OpMode
 {
     // Drivetrain motors
-    // test
     private DcMotorEx LF = null;
     private DcMotorEx RF = null;
     private DcMotorEx RB = null;
