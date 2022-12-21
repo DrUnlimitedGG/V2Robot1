@@ -12,7 +12,7 @@ public class RedLeft {
 
         RoadRunnerBotEntity LeftPark = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(6000, 6000, Math.toRadians(180), Math.toRadians(180), 15)
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-35, -62.58, Math.toRadians(90.00)))
                                 .splineToConstantHeading(new Vector2d(-12.13, -60.67), Math.toRadians(90.00))
@@ -64,7 +64,7 @@ public class RedLeft {
 
         RoadRunnerBotEntity MiddlePark = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(6000, 6000, Math.toRadians(180), Math.toRadians(180), 15)
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-35, -62.58, Math.toRadians(90.00)))
                                 .splineToConstantHeading(new Vector2d(-12.13, -60.67), Math.toRadians(90.00))
@@ -169,6 +169,8 @@ public class RedLeft {
         meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_OFFICIAL)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
+                .addEntity(LeftPark)
+                .addEntity(MiddlePark)
                 .addEntity(RightPark)
                 .start();
     }
