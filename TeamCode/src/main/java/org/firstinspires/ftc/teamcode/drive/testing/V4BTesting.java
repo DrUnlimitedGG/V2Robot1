@@ -28,6 +28,7 @@ public class V4BTesting extends OpMode
         /*
         TODO: Fine tune Servo directions
          */
+
         RightServo.setDirection(Servo.Direction.REVERSE);
 
     }
@@ -49,7 +50,7 @@ public class V4BTesting extends OpMode
         RightServo.setPosition(1);
     }
 
-    /*
+    /*,,
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     @Override
@@ -64,6 +65,10 @@ public class V4BTesting extends OpMode
             RightServo.setPosition(RightPosition);
 
         }
+
+        telemetry.addData("Left Servo Position: ", LeftServo.getPosition());
+        telemetry.addData("Right Servo Position: ", RightServo.getPosition());
+        telemetry.update();
     }
 
     /*

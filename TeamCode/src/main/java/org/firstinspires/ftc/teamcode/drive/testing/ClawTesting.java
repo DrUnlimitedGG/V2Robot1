@@ -72,7 +72,12 @@ public class ClawTesting extends OpMode
 
         }
 
-        telemetry.addData("Position: ", "Hello");
+        telemetry.addData("Opening Claw Position: ", OpenClawPosition);
+        telemetry.addData("Closing Claw Position: ", ClosedClawPosition);
+
+        telemetry.addData("Claw Position: ", claw.getPosition());
+        telemetry.addData("Wrist Position: ", wrist.getPosition());
+
         telemetry.update();
     }
 

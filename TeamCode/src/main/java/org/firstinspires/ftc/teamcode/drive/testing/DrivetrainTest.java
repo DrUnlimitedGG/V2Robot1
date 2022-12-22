@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drive.testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.acmerobotics.dashboard.config.Config;
 
@@ -23,6 +24,12 @@ public class DrivetrainTest extends OpMode
         RF = hardwareMap.get(DcMotorEx.class, "right_front");
         RB = hardwareMap.get(DcMotorEx.class, "right_back");
         LB = hardwareMap.get(DcMotorEx.class, "left_back");
+
+        LF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
     }
 
     /*
@@ -38,7 +45,6 @@ public class DrivetrainTest extends OpMode
     @Override
 
     public void start() {
-
         RF.setPower(0);
         RB.setPower(0);
         LB.setPower(0);
@@ -67,8 +73,19 @@ public class DrivetrainTest extends OpMode
         LB.setPower(backLeftPower * powerOffset);
         RF.setPower(frontRightPower * powerOffset);
         RB.setPower(backRightPower * powerOffset);
-// hi
+
+        telemetry.addData("Left Front Power: ", LF.getPower());
+        telemetry.addData("Left Back Power: ", LB.getPower());
+        telemetry.addData("Right Front Power: ", RF.getPower());
+        telemetry.addData("Right Back Power: ", RB.getPower());
+
+        telemetry.addData("Left Front Velocity: ", LF.getVelocity());
+        telemetry.addData("Left Back Velocity: ", LB.getVelocity());
+        telemetry.addData("Right Front Velocity: ", RF.getVelocity());
+        telemetry.addData("Right Back Velocity: ", RB.getVelocity());
+
         telemetry.update();
+
     }
 
     /*
