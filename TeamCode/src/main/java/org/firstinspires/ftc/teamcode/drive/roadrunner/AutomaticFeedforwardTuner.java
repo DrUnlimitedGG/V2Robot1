@@ -63,35 +63,13 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
         telemetry.addLine("Press (Y/Δ) for yes, (B/O) for no");
         telemetry.update();
 
-        boolean fitIntercept = false;
-        while (!isStopRequested()) {
-            if (gamepad1.y) {
-                fitIntercept = true;
-                while (!isStopRequested() && gamepad1.y) {
-                    idle();
-                }
-                break;
-            } else if (gamepad1.b) {
-                while (!isStopRequested() && gamepad1.b) {
-                    idle();
-                }
-                break;
-            }
-            idle();
-        }
+        boolean fitIntercept = true;
 
         telemetry.clearAll();
         telemetry.addLine(Misc.formatInvariant(
                 "Place your robot on the field with at least %.2f in of room in front", DISTANCE));
         telemetry.addLine("Press (Y/Δ) to begin");
         telemetry.update();
-
-        while (!isStopRequested() && !gamepad1.y) {
-            idle();
-        }
-        while (!isStopRequested() && gamepad1.y) {
-            idle();
-        }
 
         telemetry.clearAll();
         telemetry.addLine("Running...");
@@ -145,21 +123,6 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
         telemetry.update();
 
         boolean fitAccelFF = false;
-        while (!isStopRequested()) {
-            if (gamepad1.y) {
-                fitAccelFF = true;
-                while (!isStopRequested() && gamepad1.y) {
-                    idle();
-                }
-                break;
-            } else if (gamepad1.b) {
-                while (!isStopRequested() && gamepad1.b) {
-                    idle();
-                }
-                break;
-            }
-            idle();
-        }
 
         if (fitAccelFF) {
             telemetry.clearAll();

@@ -1,13 +1,15 @@
-package org.firstinspires.ftc.teamcode.drive.testing;
+package org.firstinspires.ftc.teamcode.drive.showcase;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Config
-@TeleOp(name="DrivetrainTest", group="Testing")
-public class DrivetrainTest extends OpMode
+@Autonomous(name="DriveForward", group="Showcase")
+public class DriveForward extends OpMode
 {
     // Drivetrain motors
     private DcMotorEx LF = null;
@@ -16,6 +18,7 @@ public class DrivetrainTest extends OpMode
     private DcMotorEx LB = null;
 
     public static double powerOffset;
+    public static long driveTime;
 
     @Override
     public void init() {
@@ -23,6 +26,9 @@ public class DrivetrainTest extends OpMode
         RF = hardwareMap.get(DcMotorEx.class, "right_front");
         RB = hardwareMap.get(DcMotorEx.class, "right_back");
         LB = hardwareMap.get(DcMotorEx.class, "left_back");
+
+        LF.setDirection(DcMotorEx.Direction.REVERSE);
+        LB.setDirection(DcMotorEx.Direction.REVERSE);
     }
 
     /*
@@ -38,11 +44,26 @@ public class DrivetrainTest extends OpMode
     @Override
 
     public void start() {
+        powerOffset = 0.6;
+        driveTime = 1000;
 
+        LF.setPower(powerOffset);
+        LB.setPower(powerOffset);
+        RF.setPower(powerOffset);
+        RB.setPower(powerOffset);
+
+        try {
+            Thread.sleep(driveTime);
+        } catch (InterruptedException e) {
+            telemetry.addData("lol: ", "lolling");
+        }
+
+        LF.setPower(0);
+        LB.setPower(0);
         RF.setPower(0);
         RB.setPower(0);
-        LB.setPower(0);
-        LF.setPower(0);
+
+        telemetry.update();
 
     }
 
@@ -51,24 +72,7 @@ public class DrivetrainTest extends OpMode
      */
     @Override
     public void loop() {
-        double y = -gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x * 1.1;
-        double rx = gamepad1.right_stick_x;
 
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-        double frontLeftPower = (y + x + rx) / denominator;
-        double backLeftPower = (y - x + rx) / denominator;
-        double frontRightPower = (y - x - rx) / denominator;
-        double backRightPower = (y + x - rx) / denominator;
-
-        powerOffset = 0.6;
-
-        LF.setPower(frontLeftPower * powerOffset);
-        LB.setPower(backLeftPower * powerOffset);
-        RF.setPower(frontRightPower * powerOffset);
-        RB.setPower(backRightPower * powerOffset);
-
-        telemetry.update();
     }
 
     /*
