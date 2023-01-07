@@ -17,8 +17,8 @@ public class ClawTesting extends OpMode
     public static double StartingClawPosition = 0.15;
     public static double StartingWristPosition = 0.1;
 
-    public static double OpenClawPosition = 0.225;
-    public static double ClosedClawPosition = 0.15;
+    public static double OpenClawPosition = 0;
+    public static double ClosedClawPosition = 0.3;
 
     public static double StopClawPosition = 0.1;
 
@@ -28,10 +28,10 @@ public class ClawTesting extends OpMode
     @Override
     public void init() {
         claw = hardwareMap.get(Servo.class, "claw");
-        claw.setDirection(Servo.Direction.REVERSE);
+        claw.setDirection(Servo.Direction.FORWARD);
 
-        wrist = hardwareMap.get(Servo.class, "wrist");
-        wrist.setDirection(Servo.Direction.REVERSE);
+        //wrist = hardwareMap.get(Servo.class, "wrist");
+        //wrist.setDirection(Servo.Direction.REVERSE);
 
     }
 
@@ -49,7 +49,6 @@ public class ClawTesting extends OpMode
 
     public void start() {
         claw.setPosition(StartingClawPosition);
-        wrist.setPosition(StartingWristPosition);
     }
 
     /*

@@ -8,14 +8,18 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
-@TeleOp(name="V4BTesting", group="Testing")
+@TeleOp(name="ServoTesting", group="Testing")
 public class V4BTesting extends OpMode
 {
-    private Servo LeftServo = null; // Belt motor
+    private Servo LeftServo = null;
     private Servo RightServo = null;
 
-    public static double LeftPosition = 0;
-    public static double RightPosition = 1;
+    //public static double StartPosition = 0;
+    //public static double EndPosition = 1;
+
+    public static double LeftPosition = 0.5;
+    public static double RightPosition = 0.5;
+
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -28,6 +32,7 @@ public class V4BTesting extends OpMode
         /*
         TODO: Fine tune Servo directions
          */
+        LeftServo.setDirection(Servo.Direction.FORWARD);
         RightServo.setDirection(Servo.Direction.REVERSE);
 
     }
@@ -45,8 +50,6 @@ public class V4BTesting extends OpMode
     @Override
     public void start() {
 
-        LeftServo.setPosition(1);
-        RightServo.setPosition(1);
     }
 
     /*
@@ -54,16 +57,12 @@ public class V4BTesting extends OpMode
      */
     @Override
     public void loop() {
-        if (gamepad2.dpad_left) {
-            LeftServo.setPosition(LeftPosition);
-            RightServo.setPosition(LeftPosition);
-        }
+        RightServo.setPosition(RightPosition);
+        LeftServo.setPosition(LeftPosition);
 
-        if (gamepad2.dpad_right) {
-            LeftServo.setPosition(RightPosition);
-            RightServo.setPosition(RightPosition);
-
-        }
+        telemetry.addData("Servo Connection: ", LeftServo.getConnectionInfo());
+        telemetry.addData("Servo Position: ", LeftServo.getPosition());
+        telemetry.update();
     }
 
     /*
