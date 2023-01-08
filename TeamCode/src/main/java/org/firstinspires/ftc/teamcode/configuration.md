@@ -1,4 +1,3 @@
-## Configuration
 # Control Hub:
 Motor 0: right_front
 
