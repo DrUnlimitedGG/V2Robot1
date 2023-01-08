@@ -1,9 +1,15 @@
 package org.firstinspires.ftc.teamcode.drive.teleop;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.drive.opmodes.PoseStorage;
+import org.firstinspires.ftc.teamcode.drive.opmodes.SampleMecanumDrive;
 
 @Config
 @TeleOp(name="MecanumDrive", group="TeleOp")
@@ -15,7 +21,19 @@ public class MecanumDrive extends OpMode
     private DcMotorEx RB = null;
     private DcMotorEx LB = null;
 
+    private DcMotorEx LeftSlide = null;
+    private DcMotorEx RightSlide = null;
+
+    private Servo claw = null;
+    private Servo LeftServo = null;
+    private Servo RightServo = null;
+
     public static double powerOffset;
+    public static double GoUpSpeed = 0.8;
+    public static double GoDownSpeed = 0.2;
+    public static int targetPosition = 1000;
+
+    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
     @Override
     public void init() {
@@ -23,6 +41,15 @@ public class MecanumDrive extends OpMode
         RF = hardwareMap.get(DcMotorEx.class, "right_front");
         RB = hardwareMap.get(DcMotorEx.class, "right_back");
         LB = hardwareMap.get(DcMotorEx.class, "left_back");
+
+        //LeftSlide = hardwareMap.get(DcMotorEx.class, "LeftSlide");
+        //RightSlide = hardwareMap.get(DcMotorEx.class, "RightSlide");
+
+        claw = hardwareMap.get(Servo.class, "claw");
+        //LeftServo = hardwareMap.get(Servo.class, "LeftServo");
+        //RightServo = hardwareMap.get(Servo.class, "RightServo");
+
+        drive.setPoseEstimate(PoseStorage.currentPose);
     }
 
     /*
@@ -38,12 +65,29 @@ public class MecanumDrive extends OpMode
     @Override
 
     public void start() {
-
         RF.setPower(0);
         RB.setPower(0);
         LB.setPower(0);
         LF.setPower(0);
 
+        LF.setDirection(DcMotorEx.Direction.REVERSE);
+        LB.setDirection(DcMotorEx.Direction.REVERSE);
+
+        /*
+        RightSlide.setDirection(DcMotorEx.Direction.REVERSE);
+        RightServo.setDirection(Servo.Direction.REVERSE);
+
+        LeftSlide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        RightSlide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        LeftSlide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        RightSlide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+        LeftSlide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        RightSlide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
+        LeftServo.setPosition(1);
+        RightServo.setPosition(1); */
     }
 
     /*
@@ -69,6 +113,68 @@ public class MecanumDrive extends OpMode
         RF.setPower(frontRightPower * powerOffset);
         RB.setPower(backRightPower * powerOffset);
 
+        // SLIDE CODE
+        /*
+        if (gamepad2.x) { // Raise slides
+            targetPosition = targetPosition + 1;
+
+            LeftSlide.setTargetPosition(targetPosition);
+            RightSlide.setTargetPosition(targetPosition);
+
+            LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+            LeftSlide.setPower(GoUpSpeed);
+            RightSlide.setPower(GoUpSpeed);
+
+        }
+
+        if (gamepad2.y) { // Lower slides
+            if ((targetPosition - 1) < 0) {
+                targetPosition = 0;
+            } else {
+                targetPosition = targetPosition - 1;
+            }
+
+            LeftSlide.setTargetPosition(targetPosition);
+            RightSlide.setTargetPosition(targetPosition);
+
+            LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+            LeftSlide.setPower(GoDownSpeed);
+            RightSlide.setPower(GoDownSpeed);
+
+        }
+        */
+
+        // CLAW CODE
+
+        if (gamepad1.left_bumper && !gamepad1.right_bumper) { // OPEN Claw
+            claw.setPosition(0);
+
+            telemetry.addData("Claw: ", "Opening");
+
+        }
+
+        if (gamepad1.right_bumper && !gamepad1.left_bumper) { // CLOSE Claw
+            claw.setPosition(0.3);
+
+            telemetry.addData("Claw: ", "Closing");
+
+        }
+
+        // Keybinds
+
+        if (gamepad1.y) { // 180 degree turn (clockwise)
+            drive.turn(Math.toRadians(180) - 1e-6);
+        }
+
+        // Telemetry
+        Pose2d robotPose = drive.getPoseEstimate();
+        telemetry.addData("X: ", robotPose.getX());
+        telemetry.addData("Y: ", robotPose.getY());
+        telemetry.addData("Heading: ", robotPose.getHeading());
         telemetry.update();
     }
 
