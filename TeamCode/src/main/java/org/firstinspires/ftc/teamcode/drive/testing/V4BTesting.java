@@ -14,11 +14,11 @@ public class V4BTesting extends OpMode
     private Servo LeftServo = null;
     private Servo RightServo = null;
 
-    //public static double StartPosition = 0;
-    //public static double EndPosition = 1;
+    public static double StartLeft = 0;
+    public static double StartRight = 0.2
 
-    public static double LeftPosition = 0.5;
-    public static double RightPosition = 0.5;
+    public static double EndLeft = 0.8;
+    public static double EndRight = 1;
 
 
     /*
@@ -57,11 +57,22 @@ public class V4BTesting extends OpMode
      */
     @Override
     public void loop() {
-        RightServo.setPosition(RightPosition);
-        LeftServo.setPosition(LeftPosition);
+        if (gamepad1.x && !gamepad1.y) {
+            LeftServo.setPosition(StartLeft);
+            RightServo.setPosition(StartRight);
+        }
 
-        telemetry.addData("Servo Connection: ", LeftServo.getConnectionInfo());
-        telemetry.addData("Servo Position: ", LeftServo.getPosition());
+        if (gamepad1.y && !gamepad1.x) {
+            LeftServo.setPosition(EndLeft);
+            RightServo.setPosition(EndRight);
+        }
+
+        telemetry.addData("Left Servo Connection: ", LeftServo.getConnectionInfo());
+        telemetry.addData("Left Servo Position: ", LeftServo.getPosition());
+        
+        telemetry.addData("Right Servo Connection: ", RightServo.getConnectionInfo());
+        telemetry.addData("Right Servo Position: ", RightServo.getPosition());
+
         telemetry.update();
     }
 

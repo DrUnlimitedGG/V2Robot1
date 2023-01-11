@@ -64,29 +64,20 @@ public class BlueLeftParkRight extends OpMode
                      claw.setPosition(0.3);
                  })
                 .lineToLinearHeading(new Pose2d(12.13, 50, Math.toRadians(90)))
-                 .addDisplacementMarker(() -> {
+                .addDisplacementMarker(() -> {
                     LeftServo.setPosition(1);
                     RightServo.setPosition(1);
-                 })
+                })
                 .build();
 
         traj2 = drive.trajectoryBuilder(traj1.end(), false)
-                .lineToLinearHeading(new Pose2d(12.13, 9.79, Math.toRadians(-91)))
+                .lineToLinearHeading(new Pose2d(12.13, 9.79, Math.toRadians(90)))
                 .build();
 
         traj3 = drive.trajectoryBuilder(traj2.end(), false)
                 .lineToLinearHeading(new Pose2d(19, 13, Math.toRadians(-50)))
                 .addDisplacementMarker(() -> {
-                    targetPosition = 1150;
-
-                    LeftSlide.setTargetPosition(targetPosition);
-                    RightSlide.setTargetPosition(targetPosition);
-
-                    LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-
-                    LeftSlide.setPower(0.6);
-                    RightSlide.setPower(0.6);
+                    extendSlides(1150, 0.6);
                 })
                 .build();
 
@@ -94,6 +85,7 @@ public class BlueLeftParkRight extends OpMode
         traj4 = drive.trajectoryBuilder(traj3.end(), false)
                 .lineToLinearHeading(new Pose2d(21, 10, Math.toRadians(-50)))
                 .build();
+
 
     }
 
@@ -135,6 +127,28 @@ public class BlueLeftParkRight extends OpMode
         RightServo.setPosition(0.625);
 
         PoseStorage.currentPose = drive.getPoseEstimate();
+    }
+
+    public void extendSlides(int target, double speed) {
+        LeftSlide.setTargetPosition(target);
+        RightSlide.setTargetPosition(target);
+        
+        LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+        LeftSlide.setPower(speed);
+        RightSlide.setPower(speed);
+    }
+    
+    public void retractSlides(int target, double speed) {
+        LeftSlide.setTargetPosition(0);
+        RightSlide.setTargetPosition(0);
+        
+        LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+        LeftSlide.setPower(speed);
+        RightSlide.setPower(speed);
     }
 
 }
