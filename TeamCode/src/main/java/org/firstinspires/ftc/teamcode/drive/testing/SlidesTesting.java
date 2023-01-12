@@ -76,7 +76,7 @@ public class SlidesTesting extends OpMode
     @Override
     public void loop() {
         if (gamepad2.x) {
-            targetPosition = targetPosition + 1;
+            targetPosition = targetPosition + 5;
 
             LeftSlide.setTargetPosition(targetPosition);
             RightSlide.setTargetPosition(targetPosition);
@@ -90,10 +90,10 @@ public class SlidesTesting extends OpMode
         }
 
         if (gamepad2.y) {
-            if ((targetPosition - 1) < 0) {
+            if ((targetPosition - 5) < 0) {
                 targetPosition = 0;
             } else {
-                targetPosition = targetPosition - 1;
+                targetPosition = targetPosition - 10;
             }
 
             LeftSlide.setTargetPosition(targetPosition);
@@ -107,8 +107,15 @@ public class SlidesTesting extends OpMode
 
         }
 
-        LeftServo.setPosition(1);
-        RightServo.setPosition(1);
+        if (gamepad2.right_bumper) {
+            RightServo.setPosition(1);
+            LeftServo.setPosition(1);
+        }
+
+        if (gamepad2.left_bumper) {
+            RightServo.setPosition(0.2);
+            LeftServo.setPosition(0);
+        }
 
         telemetry.addData("Target Position: ", targetPosition);
         telemetry.update();

@@ -8,14 +8,14 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
-@TeleOp(name="ServoTesting", group="Testing")
+@TeleOp(name="V4BTesting", group="Testing")
 public class V4BTesting extends OpMode
 {
     private Servo LeftServo = null;
     private Servo RightServo = null;
 
     public static double StartLeft = 0;
-    public static double StartRight = 0.2
+    public static double StartRight = 0.2;
 
     public static double EndLeft = 0.8;
     public static double EndRight = 1;

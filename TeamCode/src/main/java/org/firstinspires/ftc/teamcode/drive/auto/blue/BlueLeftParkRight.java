@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.drive.opmodes.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.opmodes.PoseStorage;
 import org.firstinspires.ftc.teamcode.drive.opmodes.SampleMecanumDrive;
 
@@ -24,7 +25,7 @@ public class BlueLeftParkRight extends OpMode
 
     SampleMecanumDrive drive = null;
 
-    int targetPosition = 0;
+    int currentPosition = 0;
 
     Trajectory traj1, traj2, traj3, traj4, traj5;
 
@@ -61,8 +62,9 @@ public class BlueLeftParkRight extends OpMode
 
          traj1 = drive.trajectoryBuilder(startPose, false)
                  .addDisplacementMarker(() -> {
-                     claw.setPosition(0.3);
+                     claw.setPosition(0.8);
                  })
+
                 .lineToLinearHeading(new Pose2d(12.13, 50, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
                     LeftServo.setPosition(1);
@@ -75,15 +77,20 @@ public class BlueLeftParkRight extends OpMode
                 .build();
 
         traj3 = drive.trajectoryBuilder(traj2.end(), false)
-                .lineToLinearHeading(new Pose2d(19, 13, Math.toRadians(-50)))
-                .addDisplacementMarker(() -> {
-                    extendSlides(1150, 0.6);
+                .lineToLinearHeading(new Pose2d(19, 9, Math.toRadians(130)))
+                .addDisplacementMarker(0.1, () -> {
+                    extendSlides(500, 0.9);
+                    LeftServo.setPosition(0);
+                    RightServo.setPosition(0.2);
+                    extendSlides(1200, 0.9);
                 })
                 .build();
 
 
         traj4 = drive.trajectoryBuilder(traj3.end(), false)
-                .lineToLinearHeading(new Pose2d(21, 10, Math.toRadians(-50)))
+                .lineToLinearHeading(new Pose2d(26, 5.25, Math.toRadians(130)),
+                        SampleMecanumDrive.getVelocityConstraint(15, 130, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(35))
                 .build();
 
 
@@ -104,7 +111,7 @@ public class BlueLeftParkRight extends OpMode
         drive.followTrajectory(traj1);
         drive.followTrajectory(traj2);
         drive.followTrajectory(traj3);
-        //drive.followTrajectory(traj4);
+        drive.followTrajectory(traj4);
 
 
     }
@@ -129,26 +136,26 @@ public class BlueLeftParkRight extends OpMode
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
 
-    public void extendSlides(int target, double speed) {
+    public void extendSlides(int target, double upSpeed) {
         LeftSlide.setTargetPosition(target);
         RightSlide.setTargetPosition(target);
         
         LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
-        LeftSlide.setPower(speed);
-        RightSlide.setPower(speed);
+        LeftSlide.setPower(upSpeed);
+        RightSlide.setPower(upSpeed);
     }
     
-    public void retractSlides(int target, double speed) {
+    public void retractSlides(int target, double downSpeed) {
         LeftSlide.setTargetPosition(0);
         RightSlide.setTargetPosition(0);
         
         LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
-        LeftSlide.setPower(speed);
-        RightSlide.setPower(speed);
+        LeftSlide.setPower(downSpeed);
+        RightSlide.setPower(downSpeed);
     }
 
 }
