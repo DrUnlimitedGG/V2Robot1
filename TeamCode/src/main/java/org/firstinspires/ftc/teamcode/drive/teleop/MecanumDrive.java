@@ -84,6 +84,8 @@ public class MecanumDrive extends OpMode
 
         LeftSlide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         RightSlide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
+        powerOffset = 0.6;
     }
 
     /*
@@ -102,7 +104,17 @@ public class MecanumDrive extends OpMode
         double frontRightPower = (y - x - rx) / denominator;
         double backRightPower = (y + x - rx) / denominator;
 
-        powerOffset = 0.6;
+        if ((gamepad1.right_bumper && gamepad1.y) && !gamepad1.left_bumper) {
+            powerOffset = 1;
+        } else {
+            powerOffset = 0.6;
+        }
+
+        if (gamepad1.left_bumper && !gamepad1.right_bumper) {
+            powerOffset = 0.25;
+        } else {
+            powerOffset = 0.6;
+        }
 
         LF.setPower(frontLeftPower * powerOffset);
         LB.setPower(backLeftPower * powerOffset);
