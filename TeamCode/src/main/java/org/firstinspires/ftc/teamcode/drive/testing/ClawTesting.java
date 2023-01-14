@@ -71,6 +71,7 @@ public class ClawTesting extends OpMode
 
         }
 
+        telemetry.addData("Claw: ", claw.getConnectionInfo());
         telemetry.addData("Position: ", "Hello");
         telemetry.update();
     }

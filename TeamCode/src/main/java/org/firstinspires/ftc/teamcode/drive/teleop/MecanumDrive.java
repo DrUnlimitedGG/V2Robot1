@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.drive.teleop;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.opmodes.PoseStorage;
 import org.firstinspires.ftc.teamcode.drive.opmodes.SampleMecanumDrive;
@@ -31,9 +33,18 @@ public class MecanumDrive extends OpMode
     public static double powerOffset;
     public static double GoUpSpeed = 0.8;
     public static double GoDownSpeed = 0.2;
-    public static int targetPosition = 1000;
 
-    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+    public static int targetPosition = 0;
+
+    boolean initArm = true;
+    boolean initSlide = true;
+
+    boolean extending = false;
+    boolean retracting = false;
+
+    //ElapsedTime slideTime = new ElapsedTime();
+
+    SampleMecanumDrive drive = null;
 
     @Override
     public void init() {
@@ -49,6 +60,7 @@ public class MecanumDrive extends OpMode
         LeftServo = hardwareMap.get(Servo.class, "LeftServo");
         RightServo = hardwareMap.get(Servo.class, "RightServo");
 
+        drive = new SampleMecanumDrive(hardwareMap);
         drive.setPoseEstimate(PoseStorage.currentPose);
     }
 
@@ -112,6 +124,8 @@ public class MecanumDrive extends OpMode
 
         if (gamepad1.left_bumper && !gamepad1.right_bumper) {
             powerOffset = 0.25;
+        } else if ((gamepad1.right_bumper && gamepad1.y) && !gamepad1.left_bumper) {
+            powerOffset = 1;
         } else {
             powerOffset = 0.6;
         }
@@ -121,9 +135,18 @@ public class MecanumDrive extends OpMode
         RF.setPower(frontRightPower * powerOffset);
         RB.setPower(backRightPower * powerOffset);
 
+        telemetry.addData("Target Position: ", targetPosition);
         // SLIDE CODE
-        if (gamepad2.x && !gamepad2.y) {
-            targetPosition = targetPosition + 7;
+        if (gamepad2.y) {
+            targetPosition = targetPosition + 5;
+
+            if (initSlide == true) {
+                LeftServo.setPosition(1);
+                RightServo.setPosition(1);
+
+                initArm = false;
+                initSlide = false;
+            }
 
             LeftSlide.setTargetPosition(targetPosition);
             RightSlide.setTargetPosition(targetPosition);
@@ -136,11 +159,11 @@ public class MecanumDrive extends OpMode
 
         }
 
-        if (gamepad2.y && !gamepad2.x) {
-            if ((targetPosition - 7) < 0) {
+        if (gamepad2.x) {
+            if ((targetPosition - 5) < 0) {
                 targetPosition = 0;
             } else {
-                targetPosition = targetPosition - 7;
+                targetPosition = targetPosition - 5;
             }
 
             LeftSlide.setTargetPosition(targetPosition);
@@ -155,48 +178,72 @@ public class MecanumDrive extends OpMode
         }
 
         // V4B CODE
-        if (gamepad2.dpad_right && !gamepad2.dpad_left) {
+        if (gamepad2.left_bumper && !gamepad2.right_bumper) {
             if (targetPosition > 500) {
-                LeftServo.setPosition(0.8);
+                claw.setPosition(0.8);
+
+                LeftServo.setPosition(1);
                 RightServo.setPosition(1);
+            } else if (initArm == true) {
+                claw.setPosition(0.8);
+
+                LeftServo.setPosition(1);
+                RightServo.setPosition(1);
+
+
+                initArm = false;
+                initSlide = false;
             } else {
                 telemetry.addData("Error: ", "Raise slides to move the V4B!");
             }
         }
 
-        // V4B CODE
-        if (gamepad2.dpad_left && !gamepad2.dpad_right) {
+        if (gamepad2.left_bumper && gamepad2.right_bumper) {
+            claw.setPosition(0.8);
+
+            LeftServo.setPosition(0.7);
+            RightServo.setPosition(0.7);
+        }
+
+        if (gamepad2.right_bumper && !gamepad2.left_bumper) {
             if (targetPosition > 500) {
+                claw.setPosition(0.8);
+
                 LeftServo.setPosition(0);
-                RightServo.setPosition(0.2);
+                RightServo.setPosition(0);
             } else {
                 telemetry.addData("Error: ", "Raise slides to move the V4B!");
             }
         }
+
+
 
         // CLAW CODE
-        if (gamepad2.left_bumper && !gamepad2.right_bumper) { // OPEN Claw
+        if ((gamepad2.left_trigger > 0.4) && (gamepad2.right_trigger < 0.4)) { // OPEN Claw
             claw.setPosition(0);
-
-            // telemetry.addData("Claw: ", "Opening");
-
-        }
-
-        if (gamepad2.right_bumper && !gamepad2.left_bumper) { // CLOSE Claw
-            claw.setPosition(0.8);
 
             // telemetry.addData("Claw: ", "Closing");
 
         }
 
+        if ((gamepad2.right_trigger) > 0.4 && (gamepad2.left_trigger < 0.4)) { // CLOSE Claw
+            claw.setPosition(0.8);
 
-        // MACROS
-        if (gamepad1.y) { // 180 degree turn (clockwise)
-            drive.turn(Math.toRadians(180) - 1e-6);
+            // telemetry.addData("Claw: ", "Opening");
+
         }
 
+
+        // MACROS
+        /*if (gamepad1.y) { // 180 degree turn (clockwise)
+            drive.turn(Math.toRadians(180) - 1e-6);
+        }*/
+
         if (gamepad2.dpad_up) { // Slide at high goal
-            targetPosition = 1225;
+            targetPosition = 1150;
+            extending = true;
+
+
 
             LeftSlide.setTargetPosition(targetPosition);
             RightSlide.setTargetPosition(targetPosition);
@@ -209,8 +256,24 @@ public class MecanumDrive extends OpMode
 
         }
 
-        if (gamepad2.dpad_down) { // Slide retraction
+        if (gamepad2.dpad_right) { // Slide at high goal
+            targetPosition = 1150;
+            extending = true;
+
+            LeftSlide.setTargetPosition(targetPosition);
+            RightSlide.setTargetPosition(targetPosition);
+
+            LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+            LeftSlide.setPower(GoUpSpeed);
+            RightSlide.setPower(GoUpSpeed);
+
+        }
+
+        if (gamepad2.dpad_left) { // Slide retraction
             targetPosition = 0;
+            retracting = true;
 
             LeftSlide.setTargetPosition(targetPosition);
             RightSlide.setTargetPosition(targetPosition);
@@ -223,11 +286,36 @@ public class MecanumDrive extends OpMode
 
         }
 
+        if (extending == true) {
+            if ((LeftSlide.getCurrentPosition() > 500) && (RightSlide.getCurrentPosition() > 500)) {
+                claw.setPosition(0.8);
+                LeftServo.setPosition(0);
+                RightServo.setPosition(0);
+
+                extending = false;
+            }
+        }
+
+        if (retracting == true) {
+            if ((LeftSlide.getCurrentPosition() > 500) && (RightSlide.getCurrentPosition() > 500)) {
+                claw.setPosition(0.8);
+
+                LeftServo.setPosition(1);
+                RightServo.setPosition(1);
+
+                retracting = false;
+            }
+        }
+
+
         // Telemetry
+        drive.update();
         Pose2d robotPose = drive.getPoseEstimate();
+       //double heading = robotPose.getHeading();
+
         telemetry.addData("X: ", robotPose.getX());
         telemetry.addData("Y: ", robotPose.getY());
-        telemetry.addData("Heading: ", robotPose.getHeading());
+        telemetry.addData("Heading: ", Math.toDegrees(robotPose.getHeading()));
         telemetry.update();
     }
 

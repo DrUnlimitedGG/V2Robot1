@@ -31,18 +31,10 @@ public class SlidesTesting extends OpMode
         LeftSlide = hardwareMap.get(DcMotorEx.class, "LeftSlide");
         RightSlide = hardwareMap.get(DcMotorEx.class, "RightSlide");
 
-        /*
-        TODO: Fine tune directions
-         */
-        RightSlide.setDirection(DcMotorEx.Direction.REVERSE);
-
         LeftServo = hardwareMap.get(Servo.class, "LeftServo");
         RightServo = hardwareMap.get(Servo.class, "RightServo");
 
-        /*
-        TODO: Fine tune Servo directions
-         */
-        LeftServo.setDirection(Servo.Direction.FORWARD);
+        RightSlide.setDirection(DcMotorEx.Direction.REVERSE);
         RightServo.setDirection(Servo.Direction.REVERSE);
 
     }
@@ -81,7 +73,7 @@ public class SlidesTesting extends OpMode
             LeftSlide.setTargetPosition(targetPosition);
             RightSlide.setTargetPosition(targetPosition);
 
-            LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+           LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
             RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
             LeftSlide.setPower(GoUpSpeed);
@@ -90,7 +82,7 @@ public class SlidesTesting extends OpMode
         }
 
         if (gamepad2.y) {
-            if ((targetPosition - 5) < 0) {
+            if ((targetPosition - 10) < 0) {
                 targetPosition = 0;
             } else {
                 targetPosition = targetPosition - 10;
@@ -107,14 +99,22 @@ public class SlidesTesting extends OpMode
 
         }
 
+        if (gamepad1.right_bumper) {
+            RightSlide.setPower(GoUpSpeed);
+        }
+
+        if (gamepad1.left_bumper) {
+            RightSlide.setPower(GoDownSpeed);
+        }
+
         if (gamepad2.right_bumper) {
-            RightServo.setPosition(1);
-            LeftServo.setPosition(1);
+           RightServo.setPosition(1);
+           LeftServo.setPosition(1);
         }
 
         if (gamepad2.left_bumper) {
-            RightServo.setPosition(0.2);
-            LeftServo.setPosition(0);
+           RightServo.setPosition(0);
+           LeftServo.setPosition(0);
         }
 
         telemetry.addData("Target Position: ", targetPosition);
