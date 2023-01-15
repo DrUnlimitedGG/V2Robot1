@@ -96,7 +96,7 @@ public class TestAuto extends LinearOpMode
 
         motorBackLeft.setDirection(DcMotorEx.Direction.REVERSE);
 
-        Pose2d startPose = new Pose2d(35, 62, Math.toRadians(90.00));
+        Pose2d startPose = new Pose2d(35, 62.5, Math.toRadians(90.00));
         drive.setPoseEstimate(startPose);
 
         traj1ParkRight = drive.trajectoryBuilder(startPose, false)

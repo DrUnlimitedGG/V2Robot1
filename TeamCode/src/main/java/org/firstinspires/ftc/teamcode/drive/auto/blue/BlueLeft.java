@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.drive.opmodes.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.opmodes.SampleMecanumDrive;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -18,7 +19,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(group="Blue")
+@Autonomous(name="Left", group="Blue")
 public class BlueLeft extends LinearOpMode {
     //INTRODUCE VARIABLES HERE
 
@@ -98,7 +99,7 @@ public class BlueLeft extends LinearOpMode {
 
         motorBackLeft.setDirection(DcMotorEx.Direction.REVERSE);
 
-        Pose2d startPose = new Pose2d(35, 62, Math.toRadians(90.00));
+        Pose2d startPose = new Pose2d(35, 60, Math.toRadians(90.00));
         drive.setPoseEstimate(startPose);
 
         traj1 = drive.trajectoryBuilder(startPose, false)
@@ -106,7 +107,8 @@ public class BlueLeft extends LinearOpMode {
                     claw.setPosition(1);
                 })
 
-                .lineToLinearHeading(new Pose2d(13, 57, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(13, 57, Math.toRadians(90)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     LeftServo.setPosition(1);
                     RightServo.setPosition(1);
@@ -133,7 +135,7 @@ public class BlueLeft extends LinearOpMode {
         traj5 = drive.trajectoryBuilder(traj4.end(), false)
                 .strafeRight(0.1)
                 .addDisplacementMarker(() -> {
-                    claw.setPosition(0);
+                   claw.setPosition(0);
                 })
                 .build();
 
@@ -141,45 +143,45 @@ public class BlueLeft extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(13, 10.5, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
                     claw.setPosition(1);
-                    LeftServo.setPosition(1);
-                    RightServo.setPosition(1);
+                    LeftServo.setPosition(0.7);
+                    RightServo.setPosition(0.7);
                     retractSlides(0.2);
                 })
                 .build();
 
         traj1Right = drive.trajectoryBuilder(traj6.end(), false)
-                .lineToLinearHeading(new Pose2d(13.58, 24, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(13.58, 35, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
                     claw.setPosition(1);
-                    LeftServo.setPosition(0.6);
-                    RightServo.setPosition(0.6);
+                    LeftServo.setPosition(0.8);
+                    RightServo.setPosition(0.8);
                 })
                 .build();
 
         traj1Middle = drive.trajectoryBuilder(traj6.end(), false)
-                .lineToLinearHeading(new Pose2d(40, 10.5, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(40, 9.5, Math.toRadians(90)))
 
                 .build();
 
         traj2Middle = drive.trajectoryBuilder(traj1Middle.end(), false)
-                .lineToLinearHeading(new Pose2d(40, 24, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(40, 35, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
                     claw.setPosition(1);
-                    LeftServo.setPosition(0.6);
-                    RightServo.setPosition(0.6);
+                    LeftServo.setPosition(0.8);
+                    RightServo.setPosition(0.8);
                 })
                 .build();
 
         traj1Left = drive.trajectoryBuilder(traj6.end(), false)
-                .lineToLinearHeading(new Pose2d(66, 10.5, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(63, 9.5, Math.toRadians(90)))
                 .build();
 
         traj2Left = drive.trajectoryBuilder(traj1Left.end(), false)
-                .lineToLinearHeading(new Pose2d(66, 24, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(63, 35, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
                     claw.setPosition(1);
-                    LeftServo.setPosition(0.6);
-                    RightServo.setPosition(0.6);
+                    LeftServo.setPosition(0.8);
+                    RightServo.setPosition(0.8);
                 })
                 .build();
 

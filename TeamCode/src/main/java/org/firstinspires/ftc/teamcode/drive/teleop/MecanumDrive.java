@@ -31,8 +31,8 @@ public class MecanumDrive extends OpMode
     private Servo RightServo = null;
 
     public static double powerOffset;
-    public static double GoUpSpeed = 0.8;
-    public static double GoDownSpeed = 0.2;
+    public static double GoUpSpeed = 0.825;
+    public static double GoDownSpeed = 0.475;
 
     public static int targetPosition = 0;
 
@@ -107,7 +107,7 @@ public class MecanumDrive extends OpMode
     public void loop() {
         double y = -gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x * 1.1;
-        double rx = gamepad1.right_stick_x;
+        double rx = -gamepad1.right_stick_x;
         float spin_power = 0.30f; // The spin power
 
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
@@ -130,15 +130,15 @@ public class MecanumDrive extends OpMode
             powerOffset = 0.6;
         }
 
-        LF.setPower(frontLeftPower * powerOffset);
-        LB.setPower(backLeftPower * powerOffset);
-        RF.setPower(frontRightPower * powerOffset);
-        RB.setPower(backRightPower * powerOffset);
+        LF.setPower(frontLeftPower * -powerOffset);
+        LB.setPower(backLeftPower * -powerOffset);
+        RF.setPower(frontRightPower * -powerOffset);
+        RB.setPower(backRightPower * -powerOffset);
 
         telemetry.addData("Target Position: ", targetPosition);
         // SLIDE CODE
         if (gamepad2.y) {
-            targetPosition = targetPosition + 5;
+            targetPosition = targetPosition + 20;
 
             if (initSlide == true) {
                 LeftServo.setPosition(1);
@@ -160,10 +160,10 @@ public class MecanumDrive extends OpMode
         }
 
         if (gamepad2.x) {
-            if ((targetPosition - 5) < 0) {
+            if ((targetPosition - 20) < 0) {
                 targetPosition = 0;
-            } else {
-                targetPosition = targetPosition - 5;
+             } else {
+                targetPosition = targetPosition - 20;
             }
 
             LeftSlide.setTargetPosition(targetPosition);
@@ -178,7 +178,7 @@ public class MecanumDrive extends OpMode
         }
 
         // V4B CODE
-        if (gamepad2.left_bumper && !gamepad2.right_bumper) {
+        if (!gamepad2.left_bumper && gamepad2.right_bumper) {
             if (targetPosition > 500) {
                 claw.setPosition(0.8);
 
@@ -205,7 +205,7 @@ public class MecanumDrive extends OpMode
             RightServo.setPosition(0.7);
         }
 
-        if (gamepad2.right_bumper && !gamepad2.left_bumper) {
+        if (!gamepad2.right_bumper && gamepad2.left_bumper) {
             if (targetPosition > 500) {
                 claw.setPosition(0.8);
 
