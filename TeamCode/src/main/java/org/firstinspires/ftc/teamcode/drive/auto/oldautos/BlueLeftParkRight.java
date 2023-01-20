@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.auto.blue;
+package org.firstinspires.ftc.teamcode.drive.auto.oldautos;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -7,15 +7,15 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.eventloop.Disabled;
 
 import org.firstinspires.ftc.teamcode.drive.opmodes.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.opmodes.PoseStorage;
 import org.firstinspires.ftc.teamcode.drive.opmodes.SampleMecanumDrive;
 
+
+@Disabled
 @Autonomous(group="Blue")
-
-
-
 public class BlueLeftParkRight extends OpMode
 {
     private DcMotorEx LeftSlide = null;

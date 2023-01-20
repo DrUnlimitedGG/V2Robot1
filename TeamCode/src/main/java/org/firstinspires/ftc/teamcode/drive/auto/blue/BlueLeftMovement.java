@@ -1,63 +1,102 @@
 package org.firstinspires.ftc.teamcode.drive.auto.blue;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.drive.opmodes.SampleMecanumDrive;
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.drive.opmodes.DriveConstants;
-import org.firstinspires.ftc.teamcode.drive.opmodes.PoseStorage;
-import org.firstinspires.ftc.teamcode.drive.opmodes.SampleMecanumDrive;
+import java.util.ArrayList;
 
-@Autonomous(group="Blue")
-public class BlueLeftMovement extends OpMode
+@Autonomous(group="BlueLeftMovement", group="Blue")
+public class BlueLeftMovement extends LinearOpMode
 {
-    private DcMotorEx LeftSlide = null;
-    private DcMotorEx RightSlide = null;
+    //INTRODUCE VARIABLES HERE
 
-    private Servo LeftServo = null;
-    private Servo RightServo = null;
+    OpenCvCamera camera;
+    org.firstinspires.ftc.teamcode.auton.AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
-    private Servo claw = null;
+    static final double FEET_PER_METER = 3.28084;
+
+    // Lens intrinsics
+    // UNITS ARE PIXELS
+    // NOTE: this calibration is for the C920 webcam at 800x448.
+    // You will need to do your own calibration for other configurations!
+    double fx = 578.272;
+    double fy = 578.272;
+    double cx = 402.145;
+    double cy = 221.506;
+
+    // UNITS ARE METERS
+    double tagsize = 0.166;
+
+    // Tag ID 1,2,3 from the 36h11 family
+    /*EDIT IF NEEDED!!!*/
+
+    int LEFT = 1;
+    int MIDDLE = 2;
+    int RIGHT = 3;
+
+    AprilTagDetection tagOfInterest = null;
 
     SampleMecanumDrive drive = null;
-
-    int currentPosition = 0;
-
     Trajectory traj1ParkRight, traj2ParkRight, traj1ParkMiddle, traj2ParkMiddle, traj1ParkLeft, traj2ParkLeft;
 
+    private Servo claw, LeftServo, RightServo = null;
 
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
     @Override
-    public void init() {
-        LeftSlide = hardwareMap.get(DcMotorEx.class, "LeftSlide");
-        RightSlide = hardwareMap.get(DcMotorEx.class, "RightSlide");
+    public void runOpMode()
+    {
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        aprilTagDetectionPipeline = new org.firstinspires.ftc.teamcode.auton.AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
+
+        camera.setPipeline(aprilTagDetectionPipeline);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode)
+            {
+
+            }
+        });
+
+        telemetry.setMsTransmissionInterval(50);
+
+
+        DcMotor motorFrontLeft = hardwareMap.dcMotor.get("left_front");
+        DcMotor motorBackLeft = hardwareMap.dcMotor.get("left_back");
+        DcMotor motorFrontRight = hardwareMap.dcMotor.get("right_front");
+        DcMotor motorBackRight = hardwareMap.dcMotor.get("right_back");
 
         LeftServo = hardwareMap.get(Servo.class, "LeftServo");
         RightServo = hardwareMap.get(Servo.class, "RightServo");
+
+        RightServo.setDirection(Servo.Direction.REVERSE);
 
         claw = hardwareMap.get(Servo.class, "claw");
 
         drive = new SampleMecanumDrive(hardwareMap);
 
-        RightSlide.setDirection(DcMotorEx.Direction.REVERSE);
-        RightServo.setDirection(Servo.Direction.REVERSE);
+        motorBackLeft.setDirection(DcMotorEx.Direction.REVERSE);
 
-        LeftSlide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        RightSlide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-
-        LeftSlide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        RightSlide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-
-        LeftSlide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        RightSlide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-
-        Pose2d startPose = new Pose2d(35, 62, Math.toRadians(90.00));
+        Pose2d startPose = new Pose2d(35, 62.5, Math.toRadians(90.00));
         drive.setPoseEstimate(startPose);
 
         traj1ParkRight = drive.trajectoryBuilder(startPose, false)
@@ -137,67 +176,117 @@ public class BlueLeftMovement extends OpMode
                 .build();
 
 
+        /*
+         * The INIT-loop:
+         * This REPLACES waitForStart!
+         */
+        while (!isStarted() && !isStopRequested())
+        {
+            ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
+
+            if(currentDetections.size() != 0)
+            {
+                boolean tagFound = false;
+
+                for(AprilTagDetection tag : currentDetections)
+                {
+                    if(tag.id == LEFT || tag.id == MIDDLE || tag.id == RIGHT)
+                    {
+                        tagOfInterest = tag;
+                        tagFound = true;
+                        break;
+                    }
+                }
+
+                if(tagFound)
+                {
+                    telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
+                    tagToTelemetry(tagOfInterest);
+                }
+                else
+                {
+                    telemetry.addLine("Don't see tag of interest :(");
+
+                    if(tagOfInterest == null)
+                    {
+                        telemetry.addLine("(The tag has never been seen)");
+                    }
+                    else
+                    {
+                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
+                        tagToTelemetry(tagOfInterest);
+                    }
+                }
+
+            }
+            else
+            {
+                telemetry.addLine("Don't see tag of interest :(");
+
+                if(tagOfInterest == null)
+                {
+                    telemetry.addLine("(The tag has never been seen)");
+                }
+                else
+                {
+                    telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
+                    tagToTelemetry(tagOfInterest);
+                }
+
+            }
+
+            telemetry.update();
+            sleep(20);
+        }
+
+
+
+
+
+        if(tagOfInterest != null)
+        {
+            telemetry.addLine("Tag snapshot:\n");
+            tagToTelemetry(tagOfInterest);
+            telemetry.update();
+            if(tagOfInterest.id == RIGHT) {
+                drive.followTrajectory(traj1ParkRight);
+                drive.followTrajectory(traj2ParkRight);
+
+
+            }else if(tagOfInterest.id == LEFT) {
+                drive.followTrajectory(traj1ParkLeft);
+                drive.followTrajectory(traj2ParkLeft);
+
+
+            } else {
+                drive.followTrajectory(traj1ParkMiddle);
+                drive.followTrajectory(traj2ParkMiddle);
+
+
+            }
+        }
+        else
+        {
+            telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
+            telemetry.update();
+        }
+
+        //motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        //motorBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+
+
     }
 
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
-    @Override
-    public void init_loop() {
+    void tagToTelemetry(AprilTagDetection detection)
+    {
+        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
+        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
+        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
+        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
+        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
-
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
-    @Override
-    public void start() {
-        drive.followTrajectory(traj1ParkRight);
-        drive.followTrajectory(traj2ParkRight);
-
-
-
-    }
-
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
-    @Override
-    public void loop() {
-
-
-    }
-
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
-    @Override
-    public void stop() {
-        LeftServo.setPosition(0);
-        RightServo.setPosition(0.625);
-
-        PoseStorage.currentPose = drive.getPoseEstimate();
-    }
-
-    public void extendSlides(int target, double upSpeed) {
-        LeftSlide.setTargetPosition(target);
-        RightSlide.setTargetPosition(target);
-
-        LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-
-        LeftSlide.setPower(upSpeed);
-        RightSlide.setPower(upSpeed);
-    }
-
-    public void retractSlides(int target, double downSpeed) {
-        LeftSlide.setTargetPosition(0);
-        RightSlide.setTargetPosition(0);
-
-        LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-
-        LeftSlide.setPower(downSpeed);
-        RightSlide.setPower(downSpeed);
-    }
-
 }
