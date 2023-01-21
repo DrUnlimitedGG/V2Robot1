@@ -19,7 +19,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name="BlueLeft", group="Blue")
+@Autonomous(name="Left", group="Blue")
 public class BlueLeft extends LinearOpMode {
     //INTRODUCE VARIABLES HERE
 
