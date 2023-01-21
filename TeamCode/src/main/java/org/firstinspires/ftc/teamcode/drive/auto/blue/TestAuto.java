@@ -1,26 +1,26 @@
-package org.firstinspires.ftc.teamcode.drive.auto.red;
+package org.firstinspires.ftc.teamcode.drive.auto.blue;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.drive.opmodes.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.opmodes.SampleMecanumDrive;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import java.util.ArrayList;
 
-@Autonomous(name="RedLeft", group="Red")
-public class RedLeft extends LinearOpMode {
+@Autonomous(group="Blue")
+public class TestAuto extends LinearOpMode
+{
     //INTRODUCE VARIABLES HERE
 
     OpenCvCamera camera;
@@ -50,27 +50,29 @@ public class RedLeft extends LinearOpMode {
     AprilTagDetection tagOfInterest = null;
 
     SampleMecanumDrive drive = null;
-    Trajectory traj1, traj2, traj3, traj4, traj5, traj6, traj1Right, traj1Middle, traj2Middle, traj1Left, traj2Left;
+    Trajectory traj1ParkRight, traj2ParkRight, traj1ParkMiddle, traj2ParkMiddle, traj1ParkLeft, traj2ParkLeft;
 
     private Servo claw, LeftServo, RightServo = null;
 
-    private DcMotorEx LeftSlide, RightSlide = null;
-
     @Override
-    public void runOpMode() {
+    public void runOpMode()
+    {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new org.firstinspires.ftc.teamcode.auton.AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
             @Override
-            public void onOpened() {
-                camera.startStreaming(800, 448, OpenCvCameraRotation.UPRIGHT);
+            public void onOpened()
+            {
+                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
-            public void onError(int errorCode) {
+            public void onError(int errorCode)
+            {
 
             }
         });
@@ -83,15 +85,10 @@ public class RedLeft extends LinearOpMode {
         DcMotor motorFrontRight = hardwareMap.dcMotor.get("right_front");
         DcMotor motorBackRight = hardwareMap.dcMotor.get("right_back");
 
-        LeftSlide = hardwareMap.get(DcMotorEx.class, "LeftSlide");
-        RightSlide = hardwareMap.get(DcMotorEx.class, "RightSlide");
-
-
         LeftServo = hardwareMap.get(Servo.class, "LeftServo");
         RightServo = hardwareMap.get(Servo.class, "RightServo");
 
         RightServo.setDirection(Servo.Direction.REVERSE);
-        RightSlide.setDirection(DcMotorEx.Direction.REVERSE);
 
         claw = hardwareMap.get(Servo.class, "claw");
 
@@ -99,92 +96,84 @@ public class RedLeft extends LinearOpMode {
 
         motorBackLeft.setDirection(DcMotorEx.Direction.REVERSE);
 
-        Pose2d startPose = new Pose2d(35, 60, Math.toRadians(90.00));
+        Pose2d startPose = new Pose2d(35, 62.5, Math.toRadians(90.00));
         drive.setPoseEstimate(startPose);
 
-        traj1 = drive.trajectoryBuilder(startPose, false)
+        traj1ParkRight = drive.trajectoryBuilder(startPose, false)
                 .addDisplacementMarker(() -> {
                     claw.setPosition(1);
+
                 })
 
-                .lineToLinearHeading(new Pose2d(13, 57, Math.toRadians(90)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineToLinearHeading(new Pose2d(13.58, 60, Math.toRadians(90)))
+
                 .addDisplacementMarker(() -> {
                     LeftServo.setPosition(1);
                     RightServo.setPosition(1);
                 })
+
                 .build();
 
-        traj2 = drive.trajectoryBuilder(traj1.end(), false)
-                .lineToLinearHeading(new Pose2d(13, 9.79, Math.toRadians(90)))
-                .addDisplacementMarker(() -> {
-                    extendSlides(1050, 0.85);
-                    LeftServo.setPosition(0);
-                    RightServo.setPosition(0);
-                })
-                .build();
+        traj2ParkRight = drive.trajectoryBuilder(traj1ParkRight.end(), false)
+                .lineToLinearHeading(new Pose2d(13.58, 24, Math.toRadians(90)))
 
-        traj3 = drive.trajectoryBuilder(traj2.end(), false)
-                .lineToLinearHeading(new Pose2d(19, 9, Math.toRadians(130)))
-                .build();
-
-        traj4 = drive.trajectoryBuilder(traj3.end(), false)
-                .lineToLinearHeading(new Pose2d(25.5, 6.5, Math.toRadians(133)))
-                .build();
-
-        traj5 = drive.trajectoryBuilder(traj4.end(), false)
-                .strafeRight(0.1)
-                .addDisplacementMarker(() -> {
-                   claw.setPosition(0);
-                })
-                .build();
-
-        traj6 = drive.trajectoryBuilder(traj5.end(), false)
-                .lineToLinearHeading(new Pose2d(13, 10.5, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
                     claw.setPosition(1);
-                    LeftServo.setPosition(0.7);
-                    RightServo.setPosition(0.7);
-                    retractSlides(0.2);
+                    LeftServo.setPosition(0.6);
+                    RightServo.setPosition(0.6);
+
                 })
                 .build();
 
-        traj1Right = drive.trajectoryBuilder(traj6.end(), false)
-                .lineToLinearHeading(new Pose2d(13.58, 35, Math.toRadians(90)))
+        traj1ParkMiddle = drive.trajectoryBuilder(startPose, false)
                 .addDisplacementMarker(() -> {
                     claw.setPosition(1);
-                    LeftServo.setPosition(0.8);
-                    RightServo.setPosition(0.8);
+
                 })
+
+                .lineToLinearHeading(new Pose2d(40, 55, Math.toRadians(90)))
+
+                .addDisplacementMarker(() -> {
+                    LeftServo.setPosition(1);
+                    RightServo.setPosition(1);
+
+                })
+
+
                 .build();
 
-        traj1Middle = drive.trajectoryBuilder(traj6.end(), false)
-                .lineToLinearHeading(new Pose2d(40, 9.5, Math.toRadians(90)))
+        traj2ParkMiddle = drive.trajectoryBuilder(traj1ParkMiddle.end(), false)
+                .lineToLinearHeading(new Pose2d(40, 24, Math.toRadians(90)))
 
-                .build();
-
-        traj2Middle = drive.trajectoryBuilder(traj1Middle.end(), false)
-                .lineToLinearHeading(new Pose2d(40, 35, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
                     claw.setPosition(1);
-                    LeftServo.setPosition(0.8);
-                    RightServo.setPosition(0.8);
+                    LeftServo.setPosition(0.6);
+                    RightServo.setPosition(0.6);
+
                 })
+
+
                 .build();
 
-        traj1Left = drive.trajectoryBuilder(traj6.end(), false)
-                .lineToLinearHeading(new Pose2d(63, 9.5, Math.toRadians(90)))
-                .build();
-
-        traj2Left = drive.trajectoryBuilder(traj1Left.end(), false)
-                .lineToLinearHeading(new Pose2d(63, 35, Math.toRadians(90)))
+        traj1ParkLeft = drive.trajectoryBuilder(startPose, false)
                 .addDisplacementMarker(() -> {
                     claw.setPosition(1);
-                    LeftServo.setPosition(0.8);
-                    RightServo.setPosition(0.8);
+                    LeftServo.setPosition(1);
+                    RightServo.setPosition(1);
                 })
+
+                .lineToLinearHeading(new Pose2d(66, 62, Math.toRadians(90)))
                 .build();
 
+        traj2ParkLeft = drive.trajectoryBuilder(traj1ParkLeft.end(), false)
+                .lineToLinearHeading(new Pose2d(66, 24, Math.toRadians(90)))
+
+                .addDisplacementMarker(() -> {
+                    claw.setPosition(1);
+                    LeftServo.setPosition(0.6);
+                    RightServo.setPosition(0.6);
+                })
+                .build();
 
 
         /*
@@ -260,35 +249,18 @@ public class RedLeft extends LinearOpMode {
             tagToTelemetry(tagOfInterest);
             telemetry.update();
             if(tagOfInterest.id == RIGHT) {
-                drive.followTrajectory(traj1);
-                drive.followTrajectory(traj2);
-                drive.followTrajectory(traj3);
-                drive.followTrajectory(traj4);
-                drive.followTrajectory(traj5);
-                drive.followTrajectory(traj6);
-                drive.followTrajectory(traj1Right);
+                drive.followTrajectory(traj1ParkRight);
+                drive.followTrajectory(traj2ParkRight);
 
 
             }else if(tagOfInterest.id == LEFT) {
-                drive.followTrajectory(traj1);
-                drive.followTrajectory(traj2);
-                drive.followTrajectory(traj3);
-                drive.followTrajectory(traj4);
-                drive.followTrajectory(traj5);
-                drive.followTrajectory(traj6);
-                drive.followTrajectory(traj1Left);
-                drive.followTrajectory(traj2Left);
+                drive.followTrajectory(traj1ParkLeft);
+                drive.followTrajectory(traj2ParkLeft);
 
 
             } else {
-                drive.followTrajectory(traj1);
-                drive.followTrajectory(traj2);
-                drive.followTrajectory(traj3);
-                drive.followTrajectory(traj4);
-                drive.followTrajectory(traj5);
-                drive.followTrajectory(traj6);
-                drive.followTrajectory(traj1Middle);
-                drive.followTrajectory(traj2Middle);
+                drive.followTrajectory(traj1ParkMiddle);
+                drive.followTrajectory(traj2ParkMiddle);
 
 
             }
@@ -316,27 +288,5 @@ public class RedLeft extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
-    }
-
-    public void extendSlides(int target, double upSpeed) {
-        LeftSlide.setTargetPosition(target);
-        RightSlide.setTargetPosition(target);
-
-        LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-
-        LeftSlide.setPower(upSpeed);
-        RightSlide.setPower(upSpeed);
-    }
-
-    public void retractSlides( double downSpeed) {
-        LeftSlide.setTargetPosition(0);
-        RightSlide.setTargetPosition(0);
-
-        LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-
-        LeftSlide.setPower(downSpeed);
-        RightSlide.setPower(downSpeed);
     }
 }
