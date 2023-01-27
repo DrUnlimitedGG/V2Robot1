@@ -10,7 +10,6 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -34,7 +33,6 @@ import java.util.List;
  *      regression.
  */
 @Config
-@com.qualcomm.robotcore.eventloop.opmode.Disabled
 @Autonomous(group = "drive")
 public class AutomaticFeedforwardTuner extends LinearOpMode {
     public static double MAX_POWER = 0.7;
@@ -65,13 +63,35 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
         telemetry.addLine("Press (Y/Δ) for yes, (B/O) for no");
         telemetry.update();
 
-        boolean fitIntercept = true;
+        boolean fitIntercept = false;
+        while (!isStopRequested()) {
+            if (gamepad1.y) {
+                fitIntercept = true;
+                while (!isStopRequested() && gamepad1.y) {
+                    idle();
+                }
+                break;
+            } else if (gamepad1.b) {
+                while (!isStopRequested() && gamepad1.b) {
+                    idle();
+                }
+                break;
+            }
+            idle();
+        }
 
         telemetry.clearAll();
         telemetry.addLine(Misc.formatInvariant(
                 "Place your robot on the field with at least %.2f in of room in front", DISTANCE));
         telemetry.addLine("Press (Y/Δ) to begin");
         telemetry.update();
+
+        while (!isStopRequested() && !gamepad1.y) {
+            idle();
+        }
+        while (!isStopRequested() && gamepad1.y) {
+            idle();
+        }
 
         telemetry.clearAll();
         telemetry.addLine("Running...");
@@ -125,6 +145,21 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
         telemetry.update();
 
         boolean fitAccelFF = false;
+        while (!isStopRequested()) {
+            if (gamepad1.y) {
+                fitAccelFF = true;
+                while (!isStopRequested() && gamepad1.y) {
+                    idle();
+                }
+                break;
+            } else if (gamepad1.b) {
+                while (!isStopRequested() && gamepad1.b) {
+                    idle();
+                }
+                break;
+            }
+            idle();
+        }
 
         if (fitAccelFF) {
             telemetry.clearAll();

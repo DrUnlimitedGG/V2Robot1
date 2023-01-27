@@ -118,7 +118,7 @@ public class BlueLeft extends LinearOpMode {
         traj2 = drive.trajectoryBuilder(traj1.end(), false)
                 .lineToLinearHeading(new Pose2d(13, 9.79, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
-                    extendSlides(1050, 0.85);
+                    extendSlides(980, 0.85);
                     LeftServo.setPosition(0);
                     RightServo.setPosition(0);
                 })

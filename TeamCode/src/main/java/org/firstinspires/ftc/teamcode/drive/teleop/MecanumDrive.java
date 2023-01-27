@@ -32,7 +32,7 @@ public class MecanumDrive extends OpMode
 
     public static double powerOffset;
     public static double GoUpSpeed = 0.825;
-    public static double GoDownSpeed = 0.475;
+    public static double GoDownSpeed = 0.55;
 
     public static int targetPosition = 0;
 
@@ -240,7 +240,7 @@ public class MecanumDrive extends OpMode
         }*/
 
         if (gamepad2.dpad_up) { // Slide at high goal
-            targetPosition = 1150;
+            targetPosition = 940;
             extending = true;
 
 
@@ -257,7 +257,7 @@ public class MecanumDrive extends OpMode
         }
 
         if (gamepad2.dpad_right) { // Slide at high goal
-            targetPosition = 1150;
+            targetPosition = 940;
             extending = true;
 
             LeftSlide.setTargetPosition(targetPosition);
@@ -268,6 +268,7 @@ public class MecanumDrive extends OpMode
 
             LeftSlide.setPower(GoUpSpeed);
             RightSlide.setPower(GoUpSpeed);
+
 
         }
 

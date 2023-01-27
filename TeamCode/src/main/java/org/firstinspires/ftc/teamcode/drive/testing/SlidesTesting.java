@@ -20,7 +20,7 @@ public class SlidesTesting extends OpMode
     private Servo RightServo = null;
 
     public static double GoUpSpeed = 0.9;
-    public static double GoDownSpeed = 0.2;
+    public static double GoDownSpeed = 0.55;
     public static int targetPosition = 0;
 
     /*
@@ -71,7 +71,7 @@ public class SlidesTesting extends OpMode
             targetPosition = targetPosition + 5;
 
             LeftSlide.setTargetPosition(targetPosition);
-            RightSlide.setTargetPosition(targetPosition);
+            RightSlide.setTargetPosition(targetPosition - 10);
 
            LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
             RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
