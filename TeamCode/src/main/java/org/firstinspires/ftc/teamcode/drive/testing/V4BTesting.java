@@ -58,13 +58,13 @@ public class V4BTesting extends OpMode
     @Override
     public void loop() {
         if (gamepad1.x && !gamepad1.y) {
-            LeftServo.setPosition(StartLeft);
-            RightServo.setPosition(StartRight);
+            LeftServo.setPosition(0);
+            RightServo.setPosition(1);
         }
 
         if (gamepad1.y && !gamepad1.x) {
-            LeftServo.setPosition(EndLeft);
-            RightServo.setPosition(EndRight);
+            LeftServo.setPosition(1);
+            RightServo.setPosition(0);
         }
 
         telemetry.addData("Left Servo Connection: ", LeftServo.getConnectionInfo());

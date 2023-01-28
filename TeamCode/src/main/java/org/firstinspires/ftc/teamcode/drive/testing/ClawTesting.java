@@ -14,11 +14,11 @@ public class ClawTesting extends OpMode
     private Servo claw = null;
     private Servo wrist = null;
 
-    public static double StartingClawPosition = 0.15;
+    public static double StartingClawPosition = 0;
     public static double StartingWristPosition = 0.1;
 
     public static double OpenClawPosition = 0;
-    public static double ClosedClawPosition = 0.3;
+    public static double ClosedClawPosition = 0.8;
 
     public static double StopClawPosition = 0.1;
 

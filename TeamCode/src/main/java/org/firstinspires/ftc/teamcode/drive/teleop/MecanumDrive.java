@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.opmodes.PoseStorage;
@@ -26,12 +27,14 @@ public class MecanumDrive extends OpMode
     private DcMotorEx LeftSlide = null;
     private DcMotorEx RightSlide = null;
 
+    private TouchSensor clawTouch = null;
+
     private Servo claw = null;
     private Servo LeftServo = null;
     private Servo RightServo = null;
 
     public static double powerOffset;
-    public static double GoUpSpeed = 0.825;
+    public static double GoUpSpeed = 0.9;
     public static double GoDownSpeed = 0.55;
 
     public static int targetPosition = 0;
@@ -52,6 +55,8 @@ public class MecanumDrive extends OpMode
         RF = hardwareMap.get(DcMotorEx.class, "right_front");
         RB = hardwareMap.get(DcMotorEx.class, "right_back");
         LB = hardwareMap.get(DcMotorEx.class, "left_back");
+
+        clawTouch = hardwareMap.get(TouchSensor.class, "clawTouch");
 
         LeftSlide = hardwareMap.get(DcMotorEx.class, "LeftSlide");
         RightSlide = hardwareMap.get(DcMotorEx.class, "RightSlide");
@@ -135,10 +140,16 @@ public class MecanumDrive extends OpMode
         RF.setPower(frontRightPower * -powerOffset);
         RB.setPower(backRightPower * -powerOffset);
 
+
+
         telemetry.addData("Target Position: ", targetPosition);
         // SLIDE CODE
         if (gamepad2.y) {
-            targetPosition = targetPosition + 20;
+            if ((targetPosition + 20) > 1120) {
+                targetPosition = 1120;
+            } else {
+                targetPosition = targetPosition + 20;
+            }
 
             if (initSlide == true) {
                 LeftServo.setPosition(1);
@@ -232,6 +243,11 @@ public class MecanumDrive extends OpMode
             // telemetry.addData("Claw: ", "Opening");
 
         }
+
+        if (clawTouch.isPressed()) {
+            claw.setPosition(0.8);
+        }
+
 
 
         // MACROS
