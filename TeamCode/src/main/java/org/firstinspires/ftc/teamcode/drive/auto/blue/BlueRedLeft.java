@@ -107,7 +107,7 @@ public class BlueRedLeft extends LinearOpMode {
                     claw.setPosition(1);
                 })
 
-                .lineToLinearHeading(new Pose2d(13, 57, Math.toRadians(-90)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineToLinearHeading(new Pose2d(16, 57, Math.toRadians(-90)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     LeftServo.setPosition(1);
@@ -116,9 +116,9 @@ public class BlueRedLeft extends LinearOpMode {
                 .build();
 
         traj2 = drive.trajectoryBuilder(traj1.end(), false)
-                .lineToLinearHeading(new Pose2d(13, 9.79, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(16, 9.79, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
-                    extendSlides(1100, 0.85);
+                    extendSlides(1220, 0.85);
                     LeftServo.setPosition(0);
                     RightServo.setPosition(0);
                 })
@@ -129,7 +129,7 @@ public class BlueRedLeft extends LinearOpMode {
                 .build();
 
         traj4 = drive.trajectoryBuilder(traj3.end(), false)
-                .lineToLinearHeading(new Pose2d(20, 2.5, Math.toRadians(133)))
+                .lineToLinearHeading(new Pose2d(22, 1.5, Math.toRadians(133)))
                 .build();
 
         traj5 = drive.trajectoryBuilder(traj4.end(), false)
@@ -145,7 +145,7 @@ public class BlueRedLeft extends LinearOpMode {
                     claw.setPosition(1);
                     LeftServo.setPosition(1);
                     RightServo.setPosition(1);
-                    retractSlides(0.3);
+                    retractSlides(0.3); // go down faster or it will time out
                 })
                 .build();
 
@@ -177,7 +177,7 @@ public class BlueRedLeft extends LinearOpMode {
                 .build();
 
         traj2Left = drive.trajectoryBuilder(traj1Left.end(), false)
-                .lineToLinearHeading(new Pose2d(63, 35, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(63, 27, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
                     claw.setPosition(1);
                     LeftServo.setPosition(1);

@@ -145,11 +145,14 @@ public class MecanumDrive extends OpMode
         telemetry.addData("Target Position: ", targetPosition);
         // SLIDE CODE
         if (gamepad2.y) {
-            if ((targetPosition + 20) > 1120) {
+           /* if ((targetPosition + 20) > 1120) {
                 targetPosition = 1120;
             } else {
                 targetPosition = targetPosition + 20;
-            }
+            }*/
+
+            targetPosition = targetPosition + 20;
+
 
             if (initSlide == true) {
                 LeftServo.setPosition(1);
@@ -212,8 +215,8 @@ public class MecanumDrive extends OpMode
         if (gamepad2.left_bumper && gamepad2.right_bumper) {
             claw.setPosition(0.8);
 
-            LeftServo.setPosition(0.7);
-            RightServo.setPosition(0.7);
+            LeftServo.setPosition(0.8);
+            RightServo.setPosition(0.8);
         }
 
         if (!gamepad2.right_bumper && gamepad2.left_bumper) {
