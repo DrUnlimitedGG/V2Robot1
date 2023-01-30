@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drive.teleop;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -15,8 +16,9 @@ import org.firstinspires.ftc.teamcode.drive.opmodes.PoseStorage;
 import org.firstinspires.ftc.teamcode.drive.opmodes.SampleMecanumDrive;
 
 @Config
-@TeleOp(name="MecanumDrive", group="TeleOp")
-public class MecanumDrive extends OpMode
+@TeleOp(name="SlidesDisabledDrive", group="TeleOp")
+@Disabled
+public class SlidesDisabledDrive extends OpMode
 {
     // Drivetrain motors
     private DcMotorEx LF = null;
@@ -24,8 +26,8 @@ public class MecanumDrive extends OpMode
     private DcMotorEx RB = null;
     private DcMotorEx LB = null;
 
-    private DcMotorEx LeftSlide = null;
-    private DcMotorEx RightSlide = null;
+    //private DcMotorEx LeftSlide = null;
+    //private DcMotorEx RightSlide = null;
 
     private TouchSensor clawTouch = null;
 
@@ -58,8 +60,8 @@ public class MecanumDrive extends OpMode
 
         clawTouch = hardwareMap.get(TouchSensor.class, "clawTouch");
 
-        LeftSlide = hardwareMap.get(DcMotorEx.class, "LeftSlide");
-        RightSlide = hardwareMap.get(DcMotorEx.class, "RightSlide");
+        //LeftSlide = hardwareMap.get(DcMotorEx.class, "LeftSlide");
+        //RightSlide = hardwareMap.get(DcMotorEx.class, "RightSlide");
 
         claw = hardwareMap.get(Servo.class, "claw");
         LeftServo = hardwareMap.get(Servo.class, "LeftServo");
@@ -90,19 +92,19 @@ public class MecanumDrive extends OpMode
         LF.setDirection(DcMotorEx.Direction.REVERSE);
         LB.setDirection(DcMotorEx.Direction.REVERSE);
 
-        RightSlide.setDirection(DcMotorEx.Direction.REVERSE);
+        //RightSlide.setDirection(DcMotorEx.Direction.REVERSE);
         RightServo.setDirection(Servo.Direction.REVERSE);
 
-        LeftSlide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        /*LeftSlide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         RightSlide.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
         LeftSlide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         RightSlide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         LeftSlide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        RightSlide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        RightSlide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);*/
 
-        powerOffset = 0.7;
+        powerOffset = 0.8;
     }
 
     /*
@@ -124,7 +126,7 @@ public class MecanumDrive extends OpMode
         if ((gamepad1.right_bumper && gamepad1.y) && !gamepad1.left_bumper) {
             powerOffset = 1;
         } else {
-            powerOffset = 0.7;
+            powerOffset = 0.8;
         }
 
         if (gamepad1.left_bumper && !gamepad1.right_bumper) {
@@ -132,7 +134,7 @@ public class MecanumDrive extends OpMode
         } else if ((gamepad1.right_bumper && gamepad1.y) && !gamepad1.left_bumper) {
             powerOffset = 1;
         } else {
-            powerOffset = 0.7;
+            powerOffset = 0.8;
         }
 
         LF.setPower(frontLeftPower * -powerOffset);
@@ -142,7 +144,7 @@ public class MecanumDrive extends OpMode
 
 
 
-        telemetry.addData("Target Position: ", targetPosition);
+       /* telemetry.addData("Target Position: ", targetPosition);
         // SLIDE CODE
         if (gamepad2.y) {
            /* if ((targetPosition + 20) > 1120) {
@@ -151,7 +153,7 @@ public class MecanumDrive extends OpMode
                 targetPosition = targetPosition + 20;
             }*/
 
-            targetPosition = targetPosition + 20;
+         /*   targetPosition = targetPosition + 20;
 
 
             if (initSlide == true) {
@@ -176,7 +178,7 @@ public class MecanumDrive extends OpMode
         if (gamepad2.x) {
             if ((targetPosition - 20) < 0) {
                 targetPosition = 0;
-             } else {
+            } else {
                 targetPosition = targetPosition - 20;
             }
 
@@ -189,7 +191,7 @@ public class MecanumDrive extends OpMode
             LeftSlide.setPower(GoDownSpeed);
             RightSlide.setPower(GoDownSpeed);
 
-        }
+        }*/
 
         // V4B CODE
         if (!gamepad2.left_bumper && gamepad2.right_bumper) {
@@ -258,7 +260,7 @@ public class MecanumDrive extends OpMode
             drive.turn(Math.toRadians(180) - 1e-6);
         }*/
 
-        if (gamepad2.dpad_up) { // Slide at high goal
+        /*if (gamepad2.dpad_up) { // Slide at high goal
             targetPosition = 940;
             extending = true;
 
@@ -304,9 +306,9 @@ public class MecanumDrive extends OpMode
             LeftSlide.setPower(GoDownSpeed);
             RightSlide.setPower(GoDownSpeed);
 
-        }
+        }*/
 
-        if (extending == true) {
+        /*if (extending == true) {
             if ((LeftSlide.getCurrentPosition() > 500) && (RightSlide.getCurrentPosition() > 500)) {
                 claw.setPosition(0.8);
                 LeftServo.setPosition(0);
@@ -325,13 +327,13 @@ public class MecanumDrive extends OpMode
 
                 retracting = false;
             }
-        }
+        }*/
 
 
         // Telemetry
         drive.update();
         Pose2d robotPose = drive.getPoseEstimate();
-       //double heading = robotPose.getHeading();
+        //double heading = robotPose.getHeading();
 
         telemetry.addData("X: ", robotPose.getX());
         telemetry.addData("Y: ", robotPose.getY());
