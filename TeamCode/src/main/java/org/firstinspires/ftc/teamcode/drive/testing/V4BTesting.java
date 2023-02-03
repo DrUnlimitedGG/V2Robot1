@@ -14,11 +14,15 @@ public class V4BTesting extends OpMode
     private Servo LeftServo = null;
     private Servo RightServo = null;
 
-    public static double StartLeft = 0;
-    public static double StartRight = 0.2;
+    public static double UpLeftPos = 1;
+    public static double UpRightPos = 0.98;
 
-    public static double EndLeft = 0.8;
-    public static double EndRight = 1;
+    public static double MiddleLeftPos = 0.72;
+    public static double MiddleRightPos = 0.7;
+
+    public static double DownLeftPos = 0.02;
+    public static double DownRightPos = 0;
+
 
 
     /*
@@ -57,18 +61,33 @@ public class V4BTesting extends OpMode
      */
     @Override
     public void loop() {
-        if (gamepad1.x && !gamepad1.y) {
-            LeftServo.setPosition(0);
-            RightServo.setPosition(1);
+        if (gamepad1.dpad_up) {
+            LeftServo.setPosition(UpLeftPos);
+            RightServo.setPosition(UpRightPos);
         }
 
-        if (gamepad1.y && !gamepad1.x) {
-            LeftServo.setPosition(1);
-            RightServo.setPosition(0);
+        if (gamepad1.y) {
+            LeftServo.setPosition(UpLeftPos);
+            //RightServo.setPosition(UpRightPos);
         }
 
-        telemetry.addData("Left Servo Connection: ", LeftServo.getConnectionInfo());
-        telemetry.addData("Left Servo Position: ", LeftServo.getPosition());
+        if (gamepad1.x) {
+            //LeftServo.setPosition(UpLeftPos);
+            RightServo.setPosition(UpRightPos);
+        }
+
+        if (gamepad1.dpad_left || gamepad1.dpad_right) {
+            LeftServo.setPosition(MiddleLeftPos);
+            RightServo.setPosition(MiddleRightPos);
+        }
+
+        if (gamepad1.dpad_down) {
+            LeftServo.setPosition(DownLeftPos);
+            RightServo.setPosition(DownRightPos);
+        }
+
+       telemetry.addData("Left Servo Connection: ", LeftServo.getConnectionInfo());
+       telemetry.addData("Left Servo Position: ", LeftServo.getPosition());
         
         telemetry.addData("Right Servo Connection: ", RightServo.getConnectionInfo());
         telemetry.addData("Right Servo Position: ", RightServo.getPosition());
