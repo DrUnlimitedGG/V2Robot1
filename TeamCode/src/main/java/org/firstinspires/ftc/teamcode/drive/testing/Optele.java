@@ -13,8 +13,7 @@ import org.firstinspires.ftc.teamcode.drive.opmodes.SampleMecanumDrive;
 
 @Config
 @TeleOp(name="TestOp", group="Testing")
-public class Optele extends OpMode
-{
+public class Optele extends OpMode {
     // Drivetrain motors
     private DcMotorEx LF = null;
     private DcMotorEx RF = null;
@@ -138,7 +137,6 @@ public class Optele extends OpMode
         RB.setPower(backRightPower * -powerOffset);
 
 
-
         telemetry.addData("Target Position: ", targetPosition);
         // SLIDE CODE
         if (gamepad2.y) {
@@ -228,7 +226,6 @@ public class Optele extends OpMode
         }
 
 
-
         // CLAW CODE
         if ((gamepad2.left_trigger > 0.4) && (gamepad2.right_trigger < 0.4)) { // OPEN Claw
             claw.setPosition(0);
@@ -249,7 +246,6 @@ public class Optele extends OpMode
         }
 
 
-
         // MACROS
         /*if (gamepad1.y) { // 180 degree turn (clockwise)
             drive.turn(Math.toRadians(180) - 1e-6);
@@ -258,7 +254,6 @@ public class Optele extends OpMode
         if (gamepad2.dpad_up) { // Slide at high goal
             targetPosition = 940;
             extending = true;
-
 
 
             LeftSlide.setTargetPosition(targetPosition);
@@ -335,6 +330,8 @@ public class Optele extends OpMode
         telemetry.addData("Heading: ", Math.toDegrees(robotPose.getHeading()));
         telemetry.update();
     }
+
+    
 
     /*
      * Code to run ONCE after the driver hits STOP

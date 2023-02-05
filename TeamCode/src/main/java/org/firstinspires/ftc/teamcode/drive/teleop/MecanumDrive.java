@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.drive.opmodes.SampleMecanumDrive;
 @TeleOp(name="MecanumDrive", group="TeleOp")
 public class MecanumDrive extends OpMode
 {
-    // Drivetrain motors
+    // Drivetrain motorsm
     private DcMotorEx LF = null;
     private DcMotorEx RF = null;
     private DcMotorEx RB = null;
