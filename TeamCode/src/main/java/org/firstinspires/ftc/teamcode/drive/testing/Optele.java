@@ -149,7 +149,7 @@ public class Optele extends OpMode {
             targetPosition = targetPosition + 20;
 
 
-            if (initSlide == true) {
+            if (initSlide) {
                 LeftServo.setPosition(1);
                 RightServo.setPosition(1);
 
@@ -193,7 +193,7 @@ public class Optele extends OpMode {
 
                 LeftServo.setPosition(1);
                 RightServo.setPosition(1);
-            } else if (initArm == true) {
+            } else if (initArm) {
                 claw.setPosition(0.8);
 
                 LeftServo.setPosition(1);
@@ -298,7 +298,7 @@ public class Optele extends OpMode {
 
         }
 
-        if (extending == true) {
+        if (extending) {
             if ((LeftSlide.getCurrentPosition() > 500) && (RightSlide.getCurrentPosition() > 500)) {
                 claw.setPosition(0.8);
                 LeftServo.setPosition(0);
@@ -308,7 +308,7 @@ public class Optele extends OpMode {
             }
         }
 
-        if (retracting == true) {
+        if (retracting) {
             if ((LeftSlide.getCurrentPosition() > 500) && (RightSlide.getCurrentPosition() > 500)) {
                 claw.setPosition(0.8);
 
@@ -320,7 +320,7 @@ public class Optele extends OpMode {
         }
 
 
-        // Telemetry,
+        // Telemetry
         drive.update();
         Pose2d robotPose = drive.getPoseEstimate();
         //double heading = robotPose.getHeading();
