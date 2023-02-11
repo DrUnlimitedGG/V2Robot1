@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive.auto.blue;
 
+import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -50,7 +51,7 @@ public class NEWONEPLUSTWOLEFT extends LinearOpMode {
     AprilTagDetection tagOfInterest = null;
 
     SampleMecanumDrive drive = null;
-    Trajectory traj1, traj2, traj3, traj4, traj5, traj6, traj1Right, traj1Middle, traj2Middle, traj1Left, traj2Left, traj7, traj8, traj9, traj10, traj11, traj12, traj13, traj14, traj15, traj16, traj17, traj18, traj19, traj20, traj21, traj22, traj23, traj24, traj25;
+    Trajectory traj1, traj2, traj3, traj4, traj5, traj6, traj1Right, traj1Middle, traj2Middle, traj1Left, traj2Left, traj7, traj8, traj9, traj10, traj11, traj12, traj13, traj14, traj15, traj16, traj17, traj18, traj19, traj20, traj21, traj22, traj23, traj24, traj25, trajdropConeLol;
 
     private Servo claw, LeftServo, RightServo = null;
 
@@ -115,7 +116,8 @@ public class NEWONEPLUSTWOLEFT extends LinearOpMode {
                 .build();
 
         traj2 = drive.trajectoryBuilder(traj1.end(), false)
-                .lineToLinearHeading(new Pose2d(16, 20, Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(16, 20, Math.toRadians(-90)), SampleMecanumDrive.getVelocityConstraint(DriveConstants.MAX_VEL, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     extendSlides(980, 0.85);
                     LeftServo.setPosition(1);
@@ -199,11 +201,18 @@ public class NEWONEPLUSTWOLEFT extends LinearOpMode {
                 })
                 .build();
 
-        traj14 = drive.trajectoryBuilder(traj13.end(), false)
+        trajdropConeLol = drive.trajectoryBuilder(traj13.end(), false)
+                .addDisplacementMarker(() -> {
+                    claw.setPosition(0);
+                })
+                .back(0.1)
+                .build();
+
+        traj14 = drive.trajectoryBuilder(trajdropConeLol.end(), false)
                 .lineToLinearHeading(new Pose2d(43.1, 9.51, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(100), DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
-                    retractSlides(0.3);
+                    retractSlides(0.9);
                     LeftServo.setPosition(0.8);
                     RightServo.setPosition(0.8);
                 })
@@ -212,7 +221,7 @@ public class NEWONEPLUSTWOLEFT extends LinearOpMode {
 
         traj15 = drive.trajectoryBuilder(traj14.end(), false)
                 .addDisplacementMarker(() -> {
-                    retractSlides(0.3);
+                    retractSlides(0.6);
                     LeftServo.setPosition(0.8);
                     RightServo.setPosition(0.8);
                 })
@@ -220,7 +229,7 @@ public class NEWONEPLUSTWOLEFT extends LinearOpMode {
                 .build();
 
         // Beginning of 3rd cycle
-
+        /*
         traj16 = drive.trajectoryBuilder(traj15.end(), false)
                 .lineToLinearHeading(new Pose2d(53, 9.5, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
@@ -287,43 +296,25 @@ public class NEWONEPLUSTWOLEFT extends LinearOpMode {
                 .forward(0.1)
                 .build();
 
-        traj1Right = drive.trajectoryBuilder(traj6.end(), false)
-                .lineToLinearHeading(new Pose2d(13.58, 24, Math.toRadians(-90)))
+
+         */
+
+        traj1Right = drive.trajectoryBuilder(traj15.end(), false)
+                .back(14)
+                .build();
+
+        traj1Middle = drive.trajectoryBuilder(traj15.end(), false)
                 .addDisplacementMarker(() -> {
-                    claw.setPosition(1);
-                    LeftServo.setPosition(1);
-                    RightServo.setPosition(1);
+                    retractSlides(0.8);
+                    LeftServo.setPosition(0.8);
+                    RightServo.setPosition(0.8);
                 })
+                .back(4)
                 .build();
 
-        traj1Middle = drive.trajectoryBuilder(traj6.end(), false)
-                .lineToLinearHeading(new Pose2d(40, 9.5, Math.toRadians(-90)))
-
+        traj1Left = drive.trajectoryBuilder(traj15.end(), false)
+                .forward(20)
                 .build();
-
-        traj2Middle = drive.trajectoryBuilder(traj1Middle.end(), false)
-                .lineToLinearHeading(new Pose2d(40, 24, Math.toRadians(-90)))
-                .addDisplacementMarker(() -> {
-                    claw.setPosition(1);
-                    LeftServo.setPosition(1);
-                    RightServo.setPosition(1);
-                })
-                .build();
-
-        traj1Left = drive.trajectoryBuilder(traj6.end(), false)
-                .lineToLinearHeading(new Pose2d(63, 9.5, Math.toRadians(-90)))
-                .build();
-
-        traj2Left = drive.trajectoryBuilder(traj1Left.end(), false)
-                .lineToLinearHeading(new Pose2d(63, 24, Math.toRadians(-90)))
-                .addDisplacementMarker(() -> {
-                    claw.setPosition(1);
-                    LeftServo.setPosition(1);
-                    RightServo.setPosition(1);
-                })
-                .build();
-
-
 
         /*
          * The INIT-loop:
@@ -400,25 +391,33 @@ public class NEWONEPLUSTWOLEFT extends LinearOpMode {
             if(tagOfInterest.id == RIGHT) {
                 drive.followTrajectory(traj1);
                 drive.followTrajectory(traj2);
-                drive.followTrajectory(traj3);
-                //drive.followTrajectory(traj4);
+                //drive.followTrajectory(traj3);
+                drive.followTrajectory(traj4);
                 drive.followTrajectory(traj5);
                 drive.followTrajectory(traj6);
+                drive.followTrajectory(traj7);
+                drive.followTrajectory(traj8);
+
+                // 2nd cycle
+
+                drive.followTrajectory(traj9);
+                drive.followTrajectory(traj10);
+                drive.followTrajectory(traj11);
+
+                sleep(300);
+
+                drive.followTrajectory(traj12);
+                drive.followTrajectory(traj13);
+
+                sleep(1000);
+
+                drive.followTrajectory(traj14);
+                drive.followTrajectory(traj15);
+
                 drive.followTrajectory(traj1Right);
 
 
             }else if(tagOfInterest.id == LEFT) {
-                drive.followTrajectory(traj1);
-                drive.followTrajectory(traj2);
-                drive.followTrajectory(traj3);
-                drive.followTrajectory(traj4);
-                drive.followTrajectory(traj5);
-                drive.followTrajectory(traj6);
-                drive.followTrajectory(traj1Left);
-                drive.followTrajectory(traj2Left);
-
-
-            } else {
                 drive.followTrajectory(traj1);
                 drive.followTrajectory(traj2);
                 //drive.followTrajectory(traj3);
@@ -444,8 +443,42 @@ public class NEWONEPLUSTWOLEFT extends LinearOpMode {
                 drive.followTrajectory(traj14);
                 drive.followTrajectory(traj15);
 
-                // 3rd cycle
+                drive.followTrajectory(traj1Left);
 
+
+
+            } else {
+                drive.followTrajectory(traj1);
+                drive.followTrajectory(traj2);
+                //drive.followTrajectory(traj3);
+                drive.followTrajectory(traj4);
+                drive.followTrajectory(traj5);
+                drive.followTrajectory(traj6);
+                drive.followTrajectory(traj7);
+                drive.followTrajectory(traj8);
+
+                // 2nd cycle
+
+                drive.followTrajectory(traj9);
+                drive.followTrajectory(traj10);
+                drive.followTrajectory(traj11);
+
+                sleep(300);
+
+                drive.followTrajectory(traj12);
+                drive.followTrajectory(traj13);
+
+                sleep(1000);
+                
+                drive.followTrajectory(trajdropConeLol);
+
+                sleep(1000);
+
+                drive.followTrajectory(traj14);
+                drive.followTrajectory(traj15);
+
+                // 3rd cycle
+/*
                 drive.followTrajectory(traj16);
                 drive.followTrajectory(traj17);
                 drive.followTrajectory(traj18);
@@ -460,12 +493,12 @@ public class NEWONEPLUSTWOLEFT extends LinearOpMode {
                 drive.followTrajectory(traj21);
                 drive.followTrajectory(traj22);
 
-
+*/
 
                 //drive.followTrajectory(traj1Middle);
                 //drive.followTrajectory(traj2Middle);
 
-
+                drive.followTrajectory(traj1Middle);
             }
         }
         else
