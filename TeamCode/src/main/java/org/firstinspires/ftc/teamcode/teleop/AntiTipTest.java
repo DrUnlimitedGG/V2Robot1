@@ -117,7 +117,7 @@ class Antitip extends LinearOpMode {
         if (CURRENT_POWER_MULTIPLIER > 1) CURRENT_POWER_MULTIPLIER = 1;
 
 //        telemetry.addData("first", botOrientationDegs.firstAngle);
-//        telemetry .addData("second", botOrientationDegs.secondAngle);
+//        telemetry.addData("second", botOrientationDegs.secondAngle);
 //        telemetry.addData("third", botOrientationDegs.thirdAngle);
 
         telemetry.addData("heading", heading);
