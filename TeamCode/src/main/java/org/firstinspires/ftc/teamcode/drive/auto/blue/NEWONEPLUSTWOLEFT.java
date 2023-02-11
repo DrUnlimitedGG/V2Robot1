@@ -19,8 +19,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name="LeftAuto", group="Blue")
-public class BlueRedLeft extends LinearOpMode {
+@Autonomous(name="ONEPLUSTWOLEFT", group="Blue")
+public class NEWONEPLUSTWOLEFT extends LinearOpMode {
     //INTRODUCE VARIABLES HERE
 
     OpenCvCamera camera;
@@ -50,7 +50,7 @@ public class BlueRedLeft extends LinearOpMode {
     AprilTagDetection tagOfInterest = null;
 
     SampleMecanumDrive drive = null;
-    Trajectory traj1, traj2, traj3, traj4, traj5, traj6, traj1Right, traj1Middle, traj2Middle, traj1Left, traj2Left, traj7, traj8, traj9, traj10, traj11, traj12, traj13, traj14, traj15, traj16, traj17;
+    Trajectory traj1, traj2, traj3, traj4, traj5, traj6, traj1Right, traj1Middle, traj2Middle, traj1Left, traj2Left, traj7, traj8, traj9, traj10, traj11, traj12, traj13, traj14, traj15, traj16, traj17, traj18, traj19, traj20, traj21, traj22, traj23, traj24, traj25;
 
     private Servo claw, LeftServo, RightServo = null;
 
@@ -188,11 +188,11 @@ public class BlueRedLeft extends LinearOpMode {
 
         traj13 = drive.trajectoryBuilder(traj12.end(), false)
                 .addDisplacementMarker(() -> {
-                    extendSlides(980, 0.85);
+                    extendSlides(1000, 0.85);
                     LeftServo.setPosition(1);
                     RightServo.setPosition(1);
                 })
-                .lineToLinearHeading(new Pose2d(34.9, 9.4, Math.toRadians(-115)), SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(100), DriveConstants.TRACK_WIDTH),
+                .lineToLinearHeading(new Pose2d(39, 9.4, Math.toRadians(-140)), SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(100), DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     claw.setPosition(0);
@@ -209,7 +209,76 @@ public class BlueRedLeft extends LinearOpMode {
                 })
                 .build();
 
+
         traj15 = drive.trajectoryBuilder(traj14.end(), false)
+                .addDisplacementMarker(() -> {
+                    retractSlides(0.3);
+                    LeftServo.setPosition(0.8);
+                    RightServo.setPosition(0.8);
+                })
+                .forward(0.1)
+                .build();
+
+        // Beginning of 3rd cycle
+
+        traj16 = drive.trajectoryBuilder(traj15.end(), false)
+                .lineToLinearHeading(new Pose2d(53, 9.5, Math.toRadians(0)))
+                .addDisplacementMarker(() -> {
+                    claw.setPosition(0);
+
+                })
+                .build();
+
+        traj17 = drive.trajectoryBuilder(traj16.end(), false)
+                .addDisplacementMarker(() -> {
+                    LeftServo.setPosition(0.9);
+                    RightServo.setPosition(0.9);
+                    extendSlides(80, 0.9);
+                })
+                .forward(8, SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+        traj18 = drive.trajectoryBuilder(traj17.end(), false)
+                .addDisplacementMarker(() -> {
+                    claw.setPosition(1);
+                })
+                .back(0.1, SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+        traj19 = drive.trajectoryBuilder(traj18.end(), false)
+                .addDisplacementMarker(() -> {
+                    extendSlides(400, 0.9);
+                })
+                .lineToLinearHeading(new Pose2d(35, 9.5, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+        traj20 = drive.trajectoryBuilder(traj19.end(), false)
+                .addDisplacementMarker(() -> {
+                    extendSlides(1030, 0.85);
+                    LeftServo.setPosition(1);
+                    RightServo.setPosition(1);
+                })
+                .lineToLinearHeading(new Pose2d(39, 9.4, Math.toRadians(-140)), SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(100), DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> {
+                    claw.setPosition(0);
+                })
+                .build();
+
+        traj21 = drive.trajectoryBuilder(traj20.end(), false)
+                .lineToLinearHeading(new Pose2d(43.1, 9.51, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(100), DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> {
+                    retractSlides(0.3);
+                    LeftServo.setPosition(0.8);
+                    RightServo.setPosition(0.8);
+                })
+                .build();
+
+        traj22 = drive.trajectoryBuilder(traj21.end(), false)
                 .addDisplacementMarker(() -> {
                     retractSlides(0.3);
                     LeftServo.setPosition(0.8);
@@ -358,6 +427,9 @@ public class BlueRedLeft extends LinearOpMode {
                 drive.followTrajectory(traj6);
                 drive.followTrajectory(traj7);
                 drive.followTrajectory(traj8);
+
+                // 2nd cycle
+
                 drive.followTrajectory(traj9);
                 drive.followTrajectory(traj10);
                 drive.followTrajectory(traj11);
@@ -371,6 +443,22 @@ public class BlueRedLeft extends LinearOpMode {
 
                 drive.followTrajectory(traj14);
                 drive.followTrajectory(traj15);
+
+                // 3rd cycle
+
+                drive.followTrajectory(traj16);
+                drive.followTrajectory(traj17);
+                drive.followTrajectory(traj18);
+
+                sleep(300);
+
+                drive.followTrajectory(traj19);
+                drive.followTrajectory(traj20);
+
+                sleep(1000);
+
+                drive.followTrajectory(traj21);
+                drive.followTrajectory(traj22);
 
 
 

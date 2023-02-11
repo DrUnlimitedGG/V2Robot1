@@ -99,6 +99,8 @@ public class SlidesTesting extends OpMode
 
         }
 
+
+
         if (gamepad1.right_bumper) {
             RightSlide.setPower(GoUpSpeed);
         }
@@ -116,6 +118,7 @@ public class SlidesTesting extends OpMode
            RightServo.setPosition(0);
            LeftServo.setPosition(0);
         }
+
 
         telemetry.addData("Target Position: ", targetPosition);
         telemetry.update();
