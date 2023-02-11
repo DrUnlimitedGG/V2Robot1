@@ -1,0 +1,55 @@
+package org.firstinspires.ftc.teamcode.Localization;
+
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+//import com.sun.tools.javac.util.Constants;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+//import org.firstinspires.ftc.teamcode.RobotClasses.Constants;
+
+public class AntiTip {
+    static final double TIP_THRESHOLD=0;
+    static final double TIP_CONTROLS_GAIN=0;
+    private BNO055IMU imu;
+    private double[] initialOrientation;
+    public double[] currentOrientation;
+    public boolean tipping = false;
+
+
+    public AntiTip(LinearOpMode op) {
+        imu = op.hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(new BNO055IMU.Parameters());
+
+        initialOrientation = getOrientation();
+    }
+
+    public double[] update() {
+        currentOrientation = getOrientation();
+        double[] adjustedControls = new double[2];
+        if (Math.abs(currentOrientation[0] - initialOrientation[0]) > TIP_THRESHOLD ||
+                Math.abs(currentOrientation[1] - initialOrientation[1]) > TIP_THRESHOLD) {
+            tipping = true;
+            //Adjusted X Controls
+            adjustedControls[0] = -(currentOrientation[0] - initialOrientation[0]) * TIP_CONTROLS_GAIN;
+            //Adjusted Y Controls
+            adjustedControls[1] = -(currentOrientation[1] - initialOrientation[1]) * TIP_CONTROLS_GAIN;
+        } else {
+            tipping = false;
+            adjustedControls[0] = 0;
+            adjustedControls[1] = 0;
+        }
+        return adjustedControls;
+    }
+
+    // change based on imu orientation
+    private double[] getOrientation() {
+        double[] orientation = new double[2];
+        //tipping left/right
+        orientation[0] = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).firstAngle;
+        //tipping forward/back
+        orientation[1] = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).secondAngle;
+        return orientation;
+    }
+}
