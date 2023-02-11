@@ -1,17 +1,23 @@
-package org.firstinspires.ftc.teamcode.drive.auto.blue;
+package org.firstinspires.ftc.teamcode.drive.auto.deprecated;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.drive.opmodes.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.opmodes.PoseStorage;
 import org.firstinspires.ftc.teamcode.drive.opmodes.SampleMecanumDrive;
 
 @Autonomous(group="Blue")
-public class LeftMovement extends OpMode
+@Disabled
+
+
+public class BlueLeftParkRight extends OpMode
 {
     private DcMotorEx LeftSlide = null;
     private DcMotorEx RightSlide = null;
@@ -23,9 +29,7 @@ public class LeftMovement extends OpMode
 
     SampleMecanumDrive drive = null;
 
-    int currentPosition = 0;
-
-    Trajectory traj1ParkRight, traj2ParkRight, traj1ParkMiddle, traj2ParkMiddle, traj1ParkLeft, traj2ParkLeft;
+    Trajectory traj1, traj2, traj3, traj4, traj5, traj6;
 
 
     /*
@@ -58,81 +62,55 @@ public class LeftMovement extends OpMode
         Pose2d startPose = new Pose2d(35, 62, Math.toRadians(90.00));
         drive.setPoseEstimate(startPose);
 
-        traj1ParkRight = drive.trajectoryBuilder(startPose, false)
-                .addDisplacementMarker(() -> {
-                    claw.setPosition(1);
+         traj1 = drive.trajectoryBuilder(startPose, false)
+                 .addDisplacementMarker(() -> {
+                     claw.setPosition(1);
+                 })
 
-                })
-
-                .lineToLinearHeading(new Pose2d(13.58, 60, Math.toRadians(90)))
-
+                .lineToLinearHeading(new Pose2d(13, 57, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
                     LeftServo.setPosition(1);
                     RightServo.setPosition(1);
                 })
-
                 .build();
 
-        traj2ParkRight = drive.trajectoryBuilder(traj1ParkRight.end(), false)
-                .lineToLinearHeading(new Pose2d(13.58, 24, Math.toRadians(90)))
-
+        traj2 = drive.trajectoryBuilder(traj1.end(), false)
+                .lineToLinearHeading(new Pose2d(13, 9.79, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
-                    claw.setPosition(1);
-                    LeftServo.setPosition(0.6);
-                    RightServo.setPosition(0.6);
-
+                    extendSlides(1050, 0.85);
+                    LeftServo.setPosition(0);
+                    RightServo.setPosition(0);
                 })
                 .build();
 
-        traj1ParkMiddle = drive.trajectoryBuilder(startPose, false)
-                .addDisplacementMarker(() -> {
-                    claw.setPosition(1);
-
-                })
-
-                .lineToLinearHeading(new Pose2d(40, 55, Math.toRadians(90)))
-
-                .addDisplacementMarker(() -> {
-                    LeftServo.setPosition(1);
-                    RightServo.setPosition(1);
-
-                })
-
-
+        traj3 = drive.trajectoryBuilder(traj2.end(), false)
+                .lineToLinearHeading(new Pose2d(19, 9, Math.toRadians(130)))
                 .build();
 
-        traj2ParkMiddle = drive.trajectoryBuilder(traj1ParkMiddle.end(), false)
-                .lineToLinearHeading(new Pose2d(40, 24, Math.toRadians(90)))
-
-                .addDisplacementMarker(() -> {
-                    claw.setPosition(1);
-                    LeftServo.setPosition(0.6);
-                    RightServo.setPosition(0.6);
-
-                })
-
-
+        traj4 = drive.trajectoryBuilder(traj3.end(), false)
+                .lineToLinearHeading(new Pose2d(25.5, 6.5, Math.toRadians(133)))
                 .build();
 
-        traj1ParkLeft = drive.trajectoryBuilder(startPose, false)
+        traj5 = drive.trajectoryBuilder(traj4.end(), false)
+                .strafeRight(0.1)
+                .addDisplacementMarker(() -> {
+                    claw.setPosition(0);
+                })
+                .build();
+
+        traj6 = drive.trajectoryBuilder(traj5.end(), false)
+                .lineToLinearHeading(new Pose2d(13, 9.79, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
                     claw.setPosition(1);
                     LeftServo.setPosition(1);
                     RightServo.setPosition(1);
-                })
-
-                .lineToLinearHeading(new Pose2d(66, 62, Math.toRadians(90)))
-                .build();
-
-        traj2ParkLeft = drive.trajectoryBuilder(traj1ParkLeft.end(), false)
-                .lineToLinearHeading(new Pose2d(66, 24, Math.toRadians(90)))
-
-                .addDisplacementMarker(() -> {
-                    claw.setPosition(1);
-                    LeftServo.setPosition(0.6);
-                    RightServo.setPosition(0.6);
+                    retractSlides(0.2);
                 })
                 .build();
+
+
+
+
 
 
     }
@@ -149,8 +127,12 @@ public class LeftMovement extends OpMode
      */
     @Override
     public void start() {
-        drive.followTrajectory(traj1ParkRight);
-        drive.followTrajectory(traj2ParkRight);
+        drive.followTrajectory(traj1);
+        drive.followTrajectory(traj2);
+        drive.followTrajectory(traj3);
+        drive.followTrajectory(traj4);
+        drive.followTrajectory(traj5);
+        drive.followTrajectory(traj6);
 
 
 
@@ -170,8 +152,8 @@ public class LeftMovement extends OpMode
      */
     @Override
     public void stop() {
-        LeftServo.setPosition(0);
-        RightServo.setPosition(0.625);
+        LeftServo.setPosition(0.65);
+        RightServo.setPosition(0.65);
 
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
@@ -179,18 +161,18 @@ public class LeftMovement extends OpMode
     public void extendSlides(int target, double upSpeed) {
         LeftSlide.setTargetPosition(target);
         RightSlide.setTargetPosition(target);
-
+        
         LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
         LeftSlide.setPower(upSpeed);
         RightSlide.setPower(upSpeed);
     }
-
-    public void retractSlides(int target, double downSpeed) {
+    
+    public void retractSlides( double downSpeed) {
         LeftSlide.setTargetPosition(0);
         RightSlide.setTargetPosition(0);
-
+        
         LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 

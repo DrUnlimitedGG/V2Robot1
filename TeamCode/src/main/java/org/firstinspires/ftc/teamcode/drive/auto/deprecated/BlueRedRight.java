@@ -1,11 +1,13 @@
-package org.firstinspires.ftc.teamcode.drive.auto.blue;
+package org.firstinspires.ftc.teamcode.drive.auto.deprecated;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -18,8 +20,9 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(group="Blue")
-public class rightautowithoutslides extends LinearOpMode {
+@Autonomous(name="RightAuto", group="Blue")
+@Disabled
+public class BlueRedRight extends LinearOpMode {
     //INTRODUCE VARIABLES HERE
 
     OpenCvCamera camera;
@@ -98,7 +101,7 @@ public class rightautowithoutslides extends LinearOpMode {
 
         motorBackLeft.setDirection(DcMotorEx.Direction.REVERSE);
 
-        Pose2d startPose = new Pose2d(-35, 63, Math.toRadians(-90.00));
+        Pose2d startPose = new Pose2d(-35, 62.5, Math.toRadians(-90.00));
         drive.setPoseEstimate(startPose);
 
         traj1 = drive.trajectoryBuilder(startPose, false)
@@ -106,20 +109,20 @@ public class rightautowithoutslides extends LinearOpMode {
                     claw.setPosition(1);
                 })
 
-                .lineToLinearHeading(new Pose2d(-16, 57, Math.toRadians(-90)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineToLinearHeading(new Pose2d(-13, 57, Math.toRadians(-90)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
-                    LeftServo.setPosition(0.8);
-                    RightServo.setPosition(0.8);
+                    LeftServo.setPosition(1);
+                    RightServo.setPosition(1);
                 })
                 .build();
 
         traj2 = drive.trajectoryBuilder(traj1.end(), false)
-                .lineToLinearHeading(new Pose2d(-16, 9.79, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-13, 9.79, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
-                    //extendSlides(1220, 0.85);
-                    //LeftServo.setPosition(0);
-                    //RightServo.setPosition(0);
+                    extendSlides(980, 0.85);
+                    LeftServo.setPosition(0);
+                    RightServo.setPosition(0);
                 })
                 .build();
 
@@ -128,32 +131,32 @@ public class rightautowithoutslides extends LinearOpMode {
                 .build();
 
         traj4 = drive.trajectoryBuilder(traj3.end(), false)
-                .lineToLinearHeading(new Pose2d(-22, 1.5, Math.toRadians(47)))
+                .lineToLinearHeading(new Pose2d(-25.5, 6.5, Math.toRadians(47)))
                 .build();
 
         traj5 = drive.trajectoryBuilder(traj4.end(), false)
                 .strafeLeft(0.1)
                 .addDisplacementMarker(() -> {
-                    //claw.setPosition(0);
+                    claw.setPosition(0);
                 })
                 .build();
 
         traj6 = drive.trajectoryBuilder(traj5.end(), false)
                 .lineToLinearHeading(new Pose2d(-13, 10.5, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
-                    //claw.setPosition(1);
-                    //LeftServo.setPosition(1);
-                    //RightServo.setPosition(1);
-                    //retractSlides(0.3); // go down faster or it will time out
+                    claw.setPosition(1);
+                    LeftServo.setPosition(0.7);
+                    RightServo.setPosition(0.7);
+                    retractSlides(0.2);
                 })
                 .build();
 
         traj1Right = drive.trajectoryBuilder(traj6.end(), false)
-                .lineToLinearHeading(new Pose2d(-13.58, 24, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-13.58, 35, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
-                    //claw.setPosition(1);
-                    //LeftServo.setPosition(1);
-                    //RightServo.setPosition(1);
+                    claw.setPosition(1);
+                    LeftServo.setPosition(0.8);
+                    RightServo.setPosition(0.8);
                 })
                 .build();
 
@@ -163,11 +166,11 @@ public class rightautowithoutslides extends LinearOpMode {
                 .build();
 
         traj2Middle = drive.trajectoryBuilder(traj1Middle.end(), false)
-                .lineToLinearHeading(new Pose2d(-40, 24, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-40, 35, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
-                    // claw.setPosition(1);
-                    //LeftServo.setPosition(1);
-                    //RightServo.setPosition(1);
+                    claw.setPosition(1);
+                    LeftServo.setPosition(0.8);
+                    RightServo.setPosition(0.8);
                 })
                 .build();
 
@@ -176,11 +179,11 @@ public class rightautowithoutslides extends LinearOpMode {
                 .build();
 
         traj2Left = drive.trajectoryBuilder(traj1Left.end(), false)
-                .lineToLinearHeading(new Pose2d(-63, 24, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-63, 35, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
-                    //claw.setPosition(1);
-                    //LeftServo.setPosition(1);
-                    //RightServo.setPosition(1);
+                    claw.setPosition(1);
+                    LeftServo.setPosition(0.8);
+                    RightServo.setPosition(0.8);
                 })
                 .build();
 
@@ -213,8 +216,6 @@ public class rightautowithoutslides extends LinearOpMode {
                     telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
                     tagToTelemetry(tagOfInterest);
                 }
-
-
                 else
                 {
                     telemetry.addLine("Don't see tag of interest :(");
@@ -260,7 +261,7 @@ public class rightautowithoutslides extends LinearOpMode {
             telemetry.addLine("Tag snapshot:\n");
             tagToTelemetry(tagOfInterest);
             telemetry.update();
-            if(tagOfInterest.id == LEFT) {
+            if(tagOfInterest.id == RIGHT) {
                 drive.followTrajectory(traj1);
                 drive.followTrajectory(traj2);
                 drive.followTrajectory(traj3);
@@ -270,7 +271,7 @@ public class rightautowithoutslides extends LinearOpMode {
                 drive.followTrajectory(traj1Right);
 
 
-            }else if(tagOfInterest.id == RIGHT) {
+            }else if(tagOfInterest.id == LEFT) {
                 drive.followTrajectory(traj1);
                 drive.followTrajectory(traj2);
                 drive.followTrajectory(traj3);

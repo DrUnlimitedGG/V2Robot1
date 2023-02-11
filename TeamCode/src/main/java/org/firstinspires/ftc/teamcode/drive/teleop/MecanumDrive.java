@@ -27,7 +27,6 @@ public class MecanumDrive extends OpMode
     private DcMotorEx LeftSlide = null;
     private DcMotorEx RightSlide = null;
 
-    private TouchSensor clawTouch = null;
 
     private Servo claw = null;
     private Servo LeftServo = null;
@@ -56,7 +55,6 @@ public class MecanumDrive extends OpMode
         RB = hardwareMap.get(DcMotorEx.class, "right_back");
         LB = hardwareMap.get(DcMotorEx.class, "left_back");
 
-        clawTouch = hardwareMap.get(TouchSensor.class, "clawTouch");
 
         LeftSlide = hardwareMap.get(DcMotorEx.class, "LeftSlide");
         RightSlide = hardwareMap.get(DcMotorEx.class, "RightSlide");
@@ -194,12 +192,12 @@ public class MecanumDrive extends OpMode
         // V4B CODE
         if (!gamepad2.left_bumper && gamepad2.right_bumper) {
             if (targetPosition > 500) {
-                claw.setPosition(0.8);
+                claw.setPosition(1);
 
                 LeftServo.setPosition(1);
                 RightServo.setPosition(1);
             } else if (initArm == true) {
-                claw.setPosition(0.8);
+                claw.setPosition(1);
 
                 LeftServo.setPosition(1);
                 RightServo.setPosition(1);
@@ -212,22 +210,20 @@ public class MecanumDrive extends OpMode
             }
         }
 
-        if (gamepad2.left_bumper && gamepad2.right_bumper) {
+        /*if (gamepad2.left_bumper && gamepad2.right_bumper) {
             claw.setPosition(0.8);
 
             LeftServo.setPosition(0.8);
             RightServo.setPosition(0.8);
         }
 
-        if (!gamepad2.right_bumper && gamepad2.left_bumper) {
-            if (targetPosition > 500) {
-                claw.setPosition(0.8);
+         */
 
-                LeftServo.setPosition(0);
-                RightServo.setPosition(0);
-            } else {
-                telemetry.addData("Error: ", "Raise slides to move the V4B!");
-            }
+        if (!gamepad2.right_bumper && gamepad2.left_bumper) {
+            claw.setPosition(1);
+
+            LeftServo.setPosition(0.8);
+            RightServo.setPosition(0.8);
         }
 
 
@@ -241,15 +237,12 @@ public class MecanumDrive extends OpMode
         }
 
         if ((gamepad2.right_trigger) > 0.4 && (gamepad2.left_trigger < 0.4)) { // CLOSE Claw
-            claw.setPosition(0.8);
+            claw.setPosition(1);
 
             // telemetry.addData("Claw: ", "Opening");
 
         }
 
-        if (clawTouch.isPressed()) {
-            claw.setPosition(0.8);
-        }
 
 
 
@@ -308,9 +301,9 @@ public class MecanumDrive extends OpMode
 
         if (extending == true) {
             if ((LeftSlide.getCurrentPosition() > 500) && (RightSlide.getCurrentPosition() > 500)) {
-                claw.setPosition(0.8);
-                LeftServo.setPosition(0);
-                RightServo.setPosition(0);
+                claw.setPosition(1);
+                LeftServo.setPosition(0.8);
+                RightServo.setPosition(0.8);
 
                 extending = false;
             }
@@ -318,7 +311,7 @@ public class MecanumDrive extends OpMode
 
         if (retracting == true) {
             if ((LeftSlide.getCurrentPosition() > 500) && (RightSlide.getCurrentPosition() > 500)) {
-                claw.setPosition(0.8);
+                claw.setPosition(1);
 
                 LeftServo.setPosition(1);
                 RightServo.setPosition(1);

@@ -1,12 +1,12 @@
-package org.firstinspires.ftc.teamcode.drive.auto.blue;
+package org.firstinspires.ftc.teamcode.drive.auto.deprecated;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -19,8 +19,9 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name="LeftAuto", group="Blue")
-public class BlueRedLeft extends LinearOpMode {
+@Autonomous(group="Blue")
+@Disabled
+public class LeftAutoWithoutSlides extends LinearOpMode {
     //INTRODUCE VARIABLES HERE
 
     OpenCvCamera camera;
@@ -50,7 +51,7 @@ public class BlueRedLeft extends LinearOpMode {
     AprilTagDetection tagOfInterest = null;
 
     SampleMecanumDrive drive = null;
-    Trajectory traj1, traj2, traj3, traj4, traj5, traj6, traj1Right, traj1Middle, traj2Middle, traj1Left, traj2Left, traj7, traj8, traj9, traj10, traj11, traj12, traj13, traj14, traj15, traj16, traj17;
+    Trajectory traj1, traj2, traj3, traj4, traj5, traj6, traj1Right, traj1Middle, traj2Middle, traj1Left, traj2Left;
 
     private Servo claw, LeftServo, RightServo = null;
 
@@ -86,6 +87,7 @@ public class BlueRedLeft extends LinearOpMode {
         LeftSlide = hardwareMap.get(DcMotorEx.class, "LeftSlide");
         RightSlide = hardwareMap.get(DcMotorEx.class, "RightSlide");
 
+
         LeftServo = hardwareMap.get(Servo.class, "LeftServo");
         RightServo = hardwareMap.get(Servo.class, "RightServo");
 
@@ -109,148 +111,78 @@ public class BlueRedLeft extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(16, 57, Math.toRadians(-90)), SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
-                    LeftServo.setPosition(1);
-                    RightServo.setPosition(1);
+                    LeftServo.setPosition(0.8);
+                    RightServo.setPosition(0.8);
                 })
                 .build();
 
         traj2 = drive.trajectoryBuilder(traj1.end(), false)
-                .lineToLinearHeading(new Pose2d(16, 20, Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(16, 9.79, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
-                    extendSlides(980, 0.85);
-                    LeftServo.setPosition(1);
-                    RightServo.setPosition(1);
+                    //extendSlides(1220, 0.85);
+                    //LeftServo.setPosition(0);
+                    //RightServo.setPosition(0);
                 })
                 .build();
 
-        traj4 = drive.trajectoryBuilder(traj2.end(), false)
-                .lineToLinearHeading(new Pose2d(17, 9, Math.toRadians(-50)))
+        traj3 = drive.trajectoryBuilder(traj2.end(), false)
+                .lineToLinearHeading(new Pose2d(19, 9, Math.toRadians(130)))
+                .build();
+
+        traj4 = drive.trajectoryBuilder(traj3.end(), false)
+                .lineToLinearHeading(new Pose2d(22, 1.5, Math.toRadians(133)))
                 .build();
 
         traj5 = drive.trajectoryBuilder(traj4.end(), false)
-                .strafeLeft(2.5)
+                .strafeRight(0.1)
                 .addDisplacementMarker(() -> {
-                    claw.setPosition(0);
+                    //claw.setPosition(0);
                 })
                 .build();
 
         traj6 = drive.trajectoryBuilder(traj5.end(), false)
-                .lineToLinearHeading(new Pose2d(13, 10.5, Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(13, 10.5, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
-                    claw.setPosition(1);
-                    LeftServo.setPosition(0.8);
-                    RightServo.setPosition(0.8);
-                    retractSlides(0.3); // go down faster or it will time out
+                    //claw.setPosition(1);
+                    //LeftServo.setPosition(1);
+                    //RightServo.setPosition(1);
+                    //retractSlides(0.3); // go down faster or it will time out
                 })
-                .build();
-
-        traj7 = drive.trajectoryBuilder(traj6.end(), false)
-                .lineToLinearHeading(new Pose2d(13.1, 9.5, Math.toRadians(0)))
-                .build();
-
-        traj8 = drive.trajectoryBuilder(traj7.end(), false)
-                .lineToLinearHeading(new Pose2d(50, 9.5, Math.toRadians(0)))
-                .build();
-
-        traj9 = drive.trajectoryBuilder(traj8.end(), false)
-                .lineToLinearHeading(new Pose2d(53, 9.5, Math.toRadians(0)))
-                .addDisplacementMarker(() -> {
-                    claw.setPosition(0);
-
-                })
-                .build();
-
-        traj10 = drive.trajectoryBuilder(traj9.end(), false)
-                .addDisplacementMarker(() -> {
-                    LeftServo.setPosition(0.9);
-                    RightServo.setPosition(0.9);
-                    extendSlides(80, 0.9);
-                })
-                .forward(8, SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-        traj11 = drive.trajectoryBuilder(traj10.end(), false)
-                .addDisplacementMarker(() -> {
-                    claw.setPosition(1);
-                })
-                .back(0.1, SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-        traj12 = drive.trajectoryBuilder(traj11.end(), false)
-                .addDisplacementMarker(() -> {
-                    extendSlides(400, 0.9);
-                })
-                .lineToLinearHeading(new Pose2d(35, 9.5, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-        traj13 = drive.trajectoryBuilder(traj12.end(), false)
-                .addDisplacementMarker(() -> {
-                    extendSlides(980, 0.85);
-                    LeftServo.setPosition(1);
-                    RightServo.setPosition(1);
-                })
-                .lineToLinearHeading(new Pose2d(34.9, 9.4, Math.toRadians(-115)), SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(100), DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addDisplacementMarker(() -> {
-                    claw.setPosition(0);
-                })
-                .build();
-
-        traj14 = drive.trajectoryBuilder(traj13.end(), false)
-                .lineToLinearHeading(new Pose2d(43.1, 9.51, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(100), DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addDisplacementMarker(() -> {
-                    retractSlides(0.3);
-                    LeftServo.setPosition(0.8);
-                    RightServo.setPosition(0.8);
-                })
-                .build();
-
-        traj15 = drive.trajectoryBuilder(traj14.end(), false)
-                .addDisplacementMarker(() -> {
-                    retractSlides(0.3);
-                    LeftServo.setPosition(0.8);
-                    RightServo.setPosition(0.8);
-                })
-                .forward(0.1)
                 .build();
 
         traj1Right = drive.trajectoryBuilder(traj6.end(), false)
-                .lineToLinearHeading(new Pose2d(13.58, 24, Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(13.58, 24, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
-                    claw.setPosition(1);
-                    LeftServo.setPosition(1);
-                    RightServo.setPosition(1);
+                    //claw.setPosition(1);
+                    //LeftServo.setPosition(1);
+                    //RightServo.setPosition(1);
                 })
                 .build();
 
         traj1Middle = drive.trajectoryBuilder(traj6.end(), false)
-                .lineToLinearHeading(new Pose2d(40, 9.5, Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(40, 9.5, Math.toRadians(90)))
 
                 .build();
 
         traj2Middle = drive.trajectoryBuilder(traj1Middle.end(), false)
-                .lineToLinearHeading(new Pose2d(40, 24, Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(40, 24, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
-                    claw.setPosition(1);
-                    LeftServo.setPosition(1);
-                    RightServo.setPosition(1);
+                   // claw.setPosition(1);
+                    //LeftServo.setPosition(1);
+                    //RightServo.setPosition(1);
                 })
                 .build();
 
         traj1Left = drive.trajectoryBuilder(traj6.end(), false)
-                .lineToLinearHeading(new Pose2d(63, 9.5, Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(63, 9.5, Math.toRadians(90)))
                 .build();
 
         traj2Left = drive.trajectoryBuilder(traj1Left.end(), false)
-                .lineToLinearHeading(new Pose2d(63, 24, Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(63, 24, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
-                    claw.setPosition(1);
-                    LeftServo.setPosition(1);
-                    RightServo.setPosition(1);
+                    //claw.setPosition(1);
+                    //LeftServo.setPosition(1);
+                    //RightServo.setPosition(1);
                 })
                 .build();
 
@@ -332,7 +264,7 @@ public class BlueRedLeft extends LinearOpMode {
                 drive.followTrajectory(traj1);
                 drive.followTrajectory(traj2);
                 drive.followTrajectory(traj3);
-                //drive.followTrajectory(traj4);
+                drive.followTrajectory(traj4);
                 drive.followTrajectory(traj5);
                 drive.followTrajectory(traj6);
                 drive.followTrajectory(traj1Right);
@@ -352,30 +284,12 @@ public class BlueRedLeft extends LinearOpMode {
             } else {
                 drive.followTrajectory(traj1);
                 drive.followTrajectory(traj2);
-                //drive.followTrajectory(traj3);
+                drive.followTrajectory(traj3);
                 drive.followTrajectory(traj4);
                 drive.followTrajectory(traj5);
                 drive.followTrajectory(traj6);
-                drive.followTrajectory(traj7);
-                drive.followTrajectory(traj8);
-                drive.followTrajectory(traj9);
-                drive.followTrajectory(traj10);
-                drive.followTrajectory(traj11);
-
-                sleep(300);
-
-                drive.followTrajectory(traj12);
-                drive.followTrajectory(traj13);
-
-                sleep(1000);
-
-                drive.followTrajectory(traj14);
-                drive.followTrajectory(traj15);
-
-
-
-                //drive.followTrajectory(traj1Middle);
-                //drive.followTrajectory(traj2Middle);
+                drive.followTrajectory(traj1Middle);
+                drive.followTrajectory(traj2Middle);
 
 
             }
