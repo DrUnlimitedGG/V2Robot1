@@ -115,10 +115,9 @@ class Antitip extends LinearOpMode {
         }
 
         if (CURRENT_POWER_MULTIPLIER > 1) CURRENT_POWER_MULTIPLIER = 1;
-
-//        telemetry.addData("first", botOrientationDegs.firstAngle);
-//        telemetry.addData("second", botOrientationDegs.secondAngle);
-//        telemetry.addData("third", botOrientationDegs.thirdAngle);
+        telemetry.addData("first", botOrientationDegs.firstAngle);
+        telemetry.addData("second", botOrientationDegs.secondAngle);
+        telemetry.addData("third", botOrientationDegs.thirdAngle);
 
         telemetry.addData("heading", heading);
         telemetry.addData("roll", roll);
@@ -130,7 +129,7 @@ class Antitip extends LinearOpMode {
         telemetry.addData("ANTI_TIP_WEIGHTED_POWER_MULTIPLIER", df.format(ANTI_TIP_WEIGHTED_POWER_MULTIPLIER));
         telemetry.addData("ADAPTIVE_SPEED_POWER_MULTIPLIER_OFFSET", df.format(ADAPTIVE_SPEED_POWER_MULTIPLIER_OFFSET));
         telemetry.addData("ADAPTIVE TRIGGER", df.format(gamepad1.left_trigger));
-
+        //magicalpotato504
         telemetry.update();
 //    }
 //
