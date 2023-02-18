@@ -124,11 +124,11 @@ public class OnePlusOneRight extends LinearOpMode {
                 .build();
 
         traj4 = drive.trajectoryBuilder(traj2.end(), false)
-                .lineToLinearHeading(new Pose2d(-18, 8, Math.toRadians(-130)))
+                .lineToLinearHeading(new Pose2d(-18, 8, Math.toRadians(-135)))
                 .build();
 
         traj5 = drive.trajectoryBuilder(traj4.end(), false)
-                .back(5)
+                .back(0.2)
                 .addDisplacementMarker(() -> {
                     claw.setPosition(0);
                 })

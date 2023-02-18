@@ -128,7 +128,7 @@ public class OnePlusOneLeft extends LinearOpMode {
                 .build();
 
         traj5 = drive.trajectoryBuilder(traj4.end(), false)
-                .back(5)
+                .back(3.5)
                 .addDisplacementMarker(() -> {
                     claw.setPosition(0);
                 })
@@ -166,7 +166,7 @@ public class OnePlusOneLeft extends LinearOpMode {
                     RightServo.setPosition(0.9);
                     extendSlides(90, 0.9);
                 })
-                .forward(6.5, SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .forward(7.5, SampleMecanumDrive.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
@@ -192,12 +192,12 @@ public class OnePlusOneLeft extends LinearOpMode {
                     LeftServo.setPosition(1);
                     RightServo.setPosition(1);
                 })
-                .lineToLinearHeading(new Pose2d(39, 9.4, Math.toRadians(-140)), SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(100), DriveConstants.TRACK_WIDTH),
+                .lineToLinearHeading(new Pose2d(39, 9.4, Math.toRadians(-150)), SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(100), DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         trajdropConeLol = drive.trajectoryBuilder(traj13.end(), false)
-                .forward(3)
+                .forward(1.5)
                 .addDisplacementMarker(() -> {
                     claw.setPosition(0);
                 })
@@ -207,7 +207,7 @@ public class OnePlusOneLeft extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(43.1, 9.51, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(35, Math.toRadians(100), DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
-                    retractSlides(0.9);
+                    extendSlides(-100, 0.7);
                     LeftServo.setPosition(0.8);
                     RightServo.setPosition(0.8);
                 })
@@ -216,7 +216,7 @@ public class OnePlusOneLeft extends LinearOpMode {
 
         traj15 = drive.trajectoryBuilder(traj14.end(), false)
                 .addDisplacementMarker(() -> {
-                    retractSlides(0.6);
+                    extendSlides(-100, 0.7);
                     LeftServo.setPosition(0.8);
                     RightServo.setPosition(0.8);
                 })
@@ -300,7 +300,7 @@ public class OnePlusOneLeft extends LinearOpMode {
 
         traj1Middle = drive.trajectoryBuilder(traj15.end(), false)
                 .addDisplacementMarker(() -> {
-                    retractSlides(0.8);
+                    extendSlides(-100, 0.6);
                     LeftServo.setPosition(0.8);
                     RightServo.setPosition(0.8);
                 })
@@ -418,6 +418,7 @@ public class OnePlusOneLeft extends LinearOpMode {
 
                 drive.followTrajectory(traj1Right);
 
+                sleep(1500);
 
             }else if(tagOfInterest.id == LEFT) {
                 drive.followTrajectory(traj1);
@@ -454,7 +455,7 @@ public class OnePlusOneLeft extends LinearOpMode {
 
                 drive.followTrajectory(traj1Left);
 
-
+                sleep(1500);
 
             } else {
                 drive.followTrajectory(traj1);
@@ -511,6 +512,8 @@ public class OnePlusOneLeft extends LinearOpMode {
                 //drive.followTrajectory(traj2Middle);
 
                 drive.followTrajectory(traj1Middle);
+
+                sleep(1500);
             }
         }
         else

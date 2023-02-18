@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -11,6 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.drive.opmodes.PoseStorage;
 import org.firstinspires.ftc.teamcode.drive.opmodes.SampleMecanumDrive;
 
@@ -96,6 +98,12 @@ public class MecanumDrive extends OpMode
 
         LeftSlide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         RightSlide.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+        LF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        LB.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        RF.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        RB.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
         LeftSlide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         RightSlide.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -191,12 +199,7 @@ public class MecanumDrive extends OpMode
 
         // V4B CODE
         if (!gamepad2.left_bumper && gamepad2.right_bumper) {
-            if (targetPosition > 500) {
-                claw.setPosition(1);
-
-                LeftServo.setPosition(1);
-                RightServo.setPosition(1);
-            } else if (initArm == true) {
+            if (initArm == true) {
                 claw.setPosition(1);
 
                 LeftServo.setPosition(1);
@@ -206,7 +209,10 @@ public class MecanumDrive extends OpMode
                 initArm = false;
                 initSlide = false;
             } else {
-                telemetry.addData("Error: ", "Raise slides to move the V4B!");
+                claw.setPosition(1);
+
+                LeftServo.setPosition(1);
+                RightServo.setPosition(1);
             }
         }
 
@@ -232,14 +238,14 @@ public class MecanumDrive extends OpMode
         if ((gamepad2.left_trigger > 0.4) && (gamepad2.right_trigger < 0.4)) { // OPEN Claw
             claw.setPosition(0);
 
-            // telemetry.addData("Claw: ", "Closing");
+            telemetry.addData("Claw: ", "Closing");
 
         }
 
         if ((gamepad2.right_trigger) > 0.4 && (gamepad2.left_trigger < 0.4)) { // CLOSE Claw
             claw.setPosition(1);
 
-            // telemetry.addData("Claw: ", "Opening");
+            telemetry.addData("Claw: ", "Opening");
 
         }
 
@@ -252,10 +258,8 @@ public class MecanumDrive extends OpMode
         }*/
 
         if (gamepad2.dpad_up) { // Slide at high goal
-            targetPosition = 940;
+            targetPosition = 1000;
             extending = true;
-
-
 
             LeftSlide.setTargetPosition(targetPosition);
             RightSlide.setTargetPosition(targetPosition);
@@ -268,8 +272,24 @@ public class MecanumDrive extends OpMode
 
         }
 
-        if (gamepad2.dpad_right) { // Slide at high goal
-            targetPosition = 940;
+        if (gamepad2.dpad_right) { // Slide at medium goal
+            targetPosition = 680;
+            extending = true;
+
+            LeftSlide.setTargetPosition(targetPosition);
+            RightSlide.setTargetPosition(targetPosition);
+
+            LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+            LeftSlide.setPower(GoUpSpeed);
+            RightSlide.setPower(GoUpSpeed);
+
+
+        }
+
+        if (gamepad2.dpad_down) { // Slide at medium goal
+            targetPosition = 340;
             extending = true;
 
             LeftSlide.setTargetPosition(targetPosition);
@@ -302,8 +322,8 @@ public class MecanumDrive extends OpMode
         if (extending == true) {
             if ((LeftSlide.getCurrentPosition() > 500) && (RightSlide.getCurrentPosition() > 500)) {
                 claw.setPosition(1);
-                LeftServo.setPosition(0.8);
-                RightServo.setPosition(0.8);
+                LeftServo.setPosition(1);
+                RightServo.setPosition(1);
 
                 extending = false;
             }
@@ -313,8 +333,8 @@ public class MecanumDrive extends OpMode
             if ((LeftSlide.getCurrentPosition() > 500) && (RightSlide.getCurrentPosition() > 500)) {
                 claw.setPosition(1);
 
-                LeftServo.setPosition(1);
-                RightServo.setPosition(1);
+                LeftServo.setPosition(0.8);
+                RightServo.setPosition(0.8);
 
                 retracting = false;
             }
@@ -329,6 +349,16 @@ public class MecanumDrive extends OpMode
         telemetry.addData("X: ", robotPose.getX());
         telemetry.addData("Y: ", robotPose.getY());
         telemetry.addData("Heading: ", Math.toDegrees(robotPose.getHeading()));
+
+        telemetry.addData("LEFT FRONT current: ", LF.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("RIGHT FRONT current: ", RF.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("LEFT BACK current: ", LB.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("RIGHT BACK current: ", RB.getCurrent(CurrentUnit.AMPS));
+
+        telemetry.addData("LEFT SLIDE current: ", LeftSlide.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("RIGHT SLIDE current: ", RightSlide.getCurrent(CurrentUnit.AMPS));
+
+
         telemetry.update();
     }
 
@@ -337,7 +367,16 @@ public class MecanumDrive extends OpMode
      */
     @Override
     public void stop() {
+        targetPosition = -300;
 
+        LeftSlide.setTargetPosition(targetPosition);
+        RightSlide.setTargetPosition(targetPosition);
+
+        LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+        LeftSlide.setPower(1);
+        RightSlide.setPower(1);
     }
 
 }
