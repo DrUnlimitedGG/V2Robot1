@@ -116,8 +116,8 @@ public class MecanumDrive extends OpMode
      */
     @Override
     public void loop() {
-        double y = -gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x * 1.1;
+        double y = gamepad1.left_stick_y;
+        double x = -gamepad1.left_stick_x * 1.1;
         double rx = -gamepad1.right_stick_x;
         float spin_power = 0.30f; // The spin power
 
@@ -228,8 +228,8 @@ public class MecanumDrive extends OpMode
         if (!gamepad2.right_bumper && gamepad2.left_bumper) {
             claw.setPosition(1);
 
-            LeftServo.setPosition(0.8);
-            RightServo.setPosition(0.8);
+            LeftServo.setPosition(0);
+            RightServo.setPosition(0);
         }
 
 

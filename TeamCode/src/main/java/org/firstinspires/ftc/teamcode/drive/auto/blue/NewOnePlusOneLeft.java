@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.drive.opmodes.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.opmodes.SampleMecanumDrive;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -116,7 +117,15 @@ public class NewOnePlusOneLeft extends LinearOpMode {
         traj2 = drive.trajectoryBuilder(traj1.end(), false)
                 .lineToLinearHeading(new Pose2d(16, 9.79, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
-                    extendSlides(1050, 0.9);
+                    LeftSlide.setTargetPosition(1030);
+                    RightSlide.setTargetPosition(1030);
+
+                    LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                    RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+                    LeftSlide.setPower(0.9);
+                    RightSlide.setPower(0.9);
+
                     LeftServo.setPosition(0);
                     RightServo.setPosition(0);
                 })
@@ -131,14 +140,14 @@ public class NewOnePlusOneLeft extends LinearOpMode {
                 .build();
 
         traj5 = drive.trajectoryBuilder(traj4.end(), false)
-                .back(1.6)
+                .strafeLeft(2.25)
                 .addDisplacementMarker(() -> {
                     claw.setPosition(0);
                 })
                 .build();
 
         traj6 = drive.trajectoryBuilder(traj5.end(), false)
-                .lineToLinearHeading(new Pose2d(13, 10.5, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(13, 8, Math.toRadians(90)))
                 .addDisplacementMarker(() -> {
                     claw.setPosition(1);
                     LeftServo.setPosition(1);
@@ -148,19 +157,73 @@ public class NewOnePlusOneLeft extends LinearOpMode {
                 .build();
 
         traj7 = drive.trajectoryBuilder(traj6.end(), false)
-                .lineToLinearHeading(new Pose2d(66, 13, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(54, 8, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     claw.setPosition(0);
-                    extendSlides(120, 0.3);
+                    extendSlides(200, 0.3);
                 })
                 .build();
 
-        traj1Right = drive.trajectoryBuilder(traj6.end(), false)
-                .lineToLinearHeading(new Pose2d(13.58, 24, Math.toRadians(90)))
+        traj8 = drive.trajectoryBuilder(traj7.end(), false)
+                .lineToLinearHeading(new Pose2d(68, 10, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
-                    claw.setPosition(1);
+                    extendSlides(104, 0.65);
                     LeftServo.setPosition(1);
                     RightServo.setPosition(1);
+                })
+                .build();
+
+        traj9 = drive.trajectoryBuilder(traj8.end(), false)
+                .addDisplacementMarker(() -> {
+                    claw.setPosition(1);
+                })
+                .back(0.1)
+                .build();
+
+        traj10 = drive.trajectoryBuilder(traj9.end(), false)
+                .addDisplacementMarker(() -> {
+                    extendSlides(400, 0.9);
+                })
+                .lineToLinearHeading(new Pose2d(45, 10, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+        traj11 = drive.trajectoryBuilder(traj10.end(), false)
+                .lineToLinearHeading(new Pose2d(37, 3.2, Math.toRadians(47)))
+                .addDisplacementMarker(() -> {
+                    LeftSlide.setTargetPosition(1030);
+                    RightSlide.setTargetPosition(1030);
+
+                    LeftSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                    RightSlide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+                    LeftSlide.setPower(0.9);
+                    RightSlide.setPower(0.9);
+
+                    LeftServo.setPosition(0);
+                    RightServo.setPosition(0);
+                })
+
+                .build();
+
+        traj12 = drive.trajectoryBuilder(traj11.end(), false)
+                .addDisplacementMarker(() -> {
+                    extendSlides(400, 0.9);
+                    LeftServo.setPosition(1);
+                    RightServo.setPosition(1);
+
+                })
+                .lineToLinearHeading(new Pose2d(45, 10, Math.toRadians(0)), SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+        traj1Right = drive.trajectoryBuilder(traj12.end(), false)
+                .lineToLinearHeading(new Pose2d(16, 8, Math.toRadians(90)))
+                .addDisplacementMarker(() -> {
+                    claw.setPosition(0);
+                    LeftServo.setPosition(1);
+                    RightServo.setPosition(1);
+                    extendSlides(0, 0.3);
                 })
                 .build();
 
@@ -270,13 +333,18 @@ public class NewOnePlusOneLeft extends LinearOpMode {
                 drive.followTrajectory(traj3);
                 drive.followTrajectory(traj4);
                 drive.followTrajectory(traj5);
-                sleep(1000);
+                sleep(2000);
                 drive.followTrajectory(traj6);
                 drive.followTrajectory(traj7);
-                sleep(1500);
-                // drive.followTrajectory(traj1Right);
-
-
+                drive.followTrajectory(traj8);
+                sleep(1000);
+                drive.followTrajectory(traj9);
+                sleep(1000);
+                drive.followTrajectory(traj10);
+                drive.followTrajectory(traj11);
+                sleep(1000);
+                drive.followTrajectory(traj12);
+                drive.followTrajectory(traj1Right);
             }else if(tagOfInterest.id == LEFT) {
                 drive.followTrajectory(traj1);
                 drive.followTrajectory(traj2);
