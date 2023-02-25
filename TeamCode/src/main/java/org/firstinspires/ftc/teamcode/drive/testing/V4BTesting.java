@@ -86,8 +86,8 @@ public class V4BTesting extends OpMode
             RightServo.setPosition(DownRightPos);
         }
 
-       // LeftServo.setPosition(UpLeftPos);
-       // RightServo.setPosition(UpRightPos);
+       LeftServo.setPosition(UpLeftPos);
+       RightServo.setPosition(UpLeftPos);
 
        telemetry.addData("Left Servo Connection: ", LeftServo.getConnectionInfo());
        telemetry.addData("Left Servo Position: ", LeftServo.getPosition());

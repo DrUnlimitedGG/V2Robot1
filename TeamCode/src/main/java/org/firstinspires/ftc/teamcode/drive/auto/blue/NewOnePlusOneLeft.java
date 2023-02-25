@@ -49,7 +49,7 @@ public class NewOnePlusOneLeft extends LinearOpMode {
     AprilTagDetection tagOfInterest = null;
 
     SampleMecanumDrive drive = null;
-    Trajectory traj1, traj2, traj3, traj4, traj5, traj6, traj1Right, traj1Middle, traj2Middle, traj1Left, traj2Left;
+    Trajectory traj1, traj2, traj3, traj4, traj5, traj6, traj7, traj8, traj9, traj10, traj11, traj12, traj13, traj14, traj15, traj16, traj17, traj18, traj19, traj20, traj21, traj22, traj23, traj24, traj25, traj1Right, traj1Middle, traj2Middle, traj1Left, traj2Left;
 
     private Servo claw, LeftServo, RightServo = null;
 
@@ -127,11 +127,11 @@ public class NewOnePlusOneLeft extends LinearOpMode {
                 .build();
 
         traj4 = drive.trajectoryBuilder(traj3.end(), false)
-                .lineToLinearHeading(new Pose2d(23, 4, Math.toRadians(133)))
+                .lineToLinearHeading(new Pose2d(24, 5, Math.toRadians(133)))
                 .build();
 
         traj5 = drive.trajectoryBuilder(traj4.end(), false)
-                .back(2.2)
+                .back(1.6)
                 .addDisplacementMarker(() -> {
                     claw.setPosition(0);
                 })
@@ -143,7 +143,15 @@ public class NewOnePlusOneLeft extends LinearOpMode {
                     claw.setPosition(1);
                     LeftServo.setPosition(1);
                     RightServo.setPosition(1);
-                    extendSlides(0, 0.3);
+                    extendSlides(400, 0.3);
+                })
+                .build();
+
+        traj7 = drive.trajectoryBuilder(traj6.end(), false)
+                .lineToLinearHeading(new Pose2d(66, 13, Math.toRadians(0)))
+                .addDisplacementMarker(() -> {
+                    claw.setPosition(0);
+                    extendSlides(120, 0.3);
                 })
                 .build();
 
@@ -264,8 +272,9 @@ public class NewOnePlusOneLeft extends LinearOpMode {
                 drive.followTrajectory(traj5);
                 sleep(1000);
                 drive.followTrajectory(traj6);
-                sleep(2000);
-                drive.followTrajectory(traj1Right);
+                drive.followTrajectory(traj7);
+                sleep(1500);
+                // drive.followTrajectory(traj1Right);
 
 
             }else if(tagOfInterest.id == LEFT) {
@@ -277,8 +286,9 @@ public class NewOnePlusOneLeft extends LinearOpMode {
                 sleep(1000);
                 drive.followTrajectory(traj6);
                 sleep(2000);
-                drive.followTrajectory(traj1Left);
-                drive.followTrajectory(traj2Left);
+
+                // drive.followTrajectory(traj1Left);
+                // drive.followTrajectory(traj2Left);
 
 
             } else {
@@ -290,8 +300,9 @@ public class NewOnePlusOneLeft extends LinearOpMode {
                 sleep(1000);
                 drive.followTrajectory(traj6);
                 sleep(2000);
-                drive.followTrajectory(traj1Middle);
-                drive.followTrajectory(traj2Middle);
+
+                // drive.followTrajectory(traj1Middle);
+                // drive.followTrajectory(traj2Middle);
 
 
             }
